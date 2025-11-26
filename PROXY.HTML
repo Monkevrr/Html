@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a, #1a0000);
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -29,7 +29,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0a0a0a, #1a0000);
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -44,9 +44,9 @@
         }
 
         .initial-spinner {
-            border: 8px solid #1a1a1a;
-            border-top: 8px solid #ff0000;
-            border-right: 8px solid #cc0000;
+            border: 8px solid #333;
+            border-top: 8px solid #ff00ff;
+            border-right: 8px solid #00ffff;
             border-radius: 50%;
             width: 120px;
             height: 120px;
@@ -61,8 +61,8 @@
 
         .loading-text {
             font-size: 28px;
-            color: #ff0000;
-            text-shadow: 0 0 20px #ff0000;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
             animation: pulse 1.5s ease-in-out infinite;
         }
 
@@ -73,9 +73,9 @@
 
         .game-count {
             font-size: 48px;
-            color: #ff0000;
+            color: #ff00ff;
             margin-top: 20px;
-            text-shadow: 0 0 30px #ff0000;
+            text-shadow: 0 0 30px #ff00ff;
             font-weight: bold;
         }
 
@@ -90,16 +90,16 @@
             margin: 40px 0 30px 0;
             font-size: 48px;
             text-align: center;
-            text-shadow: 2px 2px 8px #ff0000, -2px -2px 8px #cc0000;
+            text-shadow: 2px 2px 8px #ff00ff, -2px -2px 8px #00ffff;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow {
             from {
-                text-shadow: 2px 2px 8px #ff0000, -2px -2px 8px #cc0000;
+                text-shadow: 2px 2px 8px #ff00ff, -2px -2px 8px #00ffff;
             }
             to {
-                text-shadow: 2px 2px 20px #ff0000, -2px -2px 20px #cc0000;
+                text-shadow: 2px 2px 20px #ff00ff, -2px -2px 20px #00ffff;
             }
         }
 
@@ -113,7 +113,7 @@
         }
 
         .game-button {
-            background: linear-gradient(145deg, #ff0000, #8b0000);
+            background: linear-gradient(145deg, #ff00ff, #00ffff);
             border: none;
             padding: 20px 40px;
             font-size: 20px;
@@ -122,7 +122,7 @@
             cursor: pointer;
             color: #fff;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             position: relative;
             overflow: hidden;
         }
@@ -135,7 +135,7 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.3);
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
@@ -147,7 +147,7 @@
 
         .game-button:hover {
             transform: scale(1.1);
-            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.7);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.5);
         }
 
         .game-button span {
@@ -173,9 +173,9 @@
         }
 
         .spinner {
-            border: 8px solid #1a1a1a;
-            border-top: 8px solid #ff0000;
-            border-right: 8px solid #cc0000;
+            border: 8px solid #333;
+            border-top: 8px solid #ff00ff;
+            border-right: 8px solid #00ffff;
             border-radius: 50%;
             width: 80px;
             height: 80px;
@@ -203,19 +203,18 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px 20px;
-            background: rgba(255, 0, 0, 0.2);
+            background: rgba(255, 0, 255, 0.2);
             border-radius: 10px;
-            border: 1px solid rgba(255, 0, 0, 0.3);
         }
 
         .game-title {
             font-size: 24px;
-            color: #ff0000;
-            text-shadow: 0 0 10px #ff0000;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
         }
 
         .close-btn {
-            background: linear-gradient(145deg, #ff0000, #8b0000);
+            background: linear-gradient(145deg, #ff0000, #cc0000);
             border: none;
             padding: 10px 25px;
             font-size: 18px;
@@ -224,21 +223,28 @@
             cursor: pointer;
             color: #fff;
             transition: transform 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
         .close-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.7);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
         }
 
         #game-frame {
             width: 100%;
             flex: 1;
-            border: 3px solid #ff0000;
+            border: 3px solid #ff00ff;
             border-radius: 15px;
             background: #000;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+        }
+
+        .error-message {
+            color: #ff0000;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -246,7 +252,7 @@
     <!-- Initial Loading Screen -->
     <div id="initial-loader">
         <div class="initial-spinner"></div>
-        <div class="loading-text">Loading games...</div>
+        <div class="loading-text">Scanning for games...</div>
         <div class="game-count" id="gameCount"></div>
     </div>
 
@@ -272,24 +278,39 @@
     </div>
 
     <script>
-        // ========================================
-        // ADD YOUR GAME FILENAMES HERE
-        // Just add the .html filename, the name is auto-generated!
-        // ========================================
-        const gameFiles = [
-            'fivenioghtsatobamas.html',
-            'sonciceexepulledbyemieime.html',
-            'view-page-source.com-dev-nex.itch.io_uzg-remastered.html',
-            'view-page-source.com-modalog.itch.io_sniper-ops-3d-kill-terror-shooter.html',
-            'view-page-source.com-rokawar.itch.io_rush-team.html',
-            'view-page-source.com-studiohammergames.itch.io_baby-sniper-in-vietnam.html',
-            'view-page-source.com-studiohammergames.itch.io_bullet-and-cry-in-space.html'
-        ];
-
         // GitHub Configuration
         const GITHUB_USER = 'Monkevrr';
         const GITHUB_REPO = 'Html';
         const GITHUB_BRANCH = 'main';
+
+        let games = [];
+
+        // Fetch all HTML files from GitHub repository
+        async function fetchGames() {
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`GitHub API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Filter only .html files
+                games = data.tree
+                    .filter(file => file.path.endsWith('.html') && file.type === 'blob')
+                    .map(file => ({
+                        filename: file.path,
+                        name: formatGameName(file.path)
+                    }));
+
+                return games;
+            } catch (error) {
+                console.error('Error fetching games:', error);
+                throw error;
+            }
+        }
 
         // Format filename to display name (remove .html and format)
         function formatGameName(filename) {
@@ -311,42 +332,58 @@
         }
 
         // Initialize and load games
-        function initializeLauncher() {
+        async function initializeLauncher() {
             const initialLoader = document.getElementById('initial-loader');
             const mainContent = document.getElementById('main-content');
             const gameCount = document.getElementById('gameCount');
+            const loadingText = initialLoader.querySelector('.loading-text');
 
-            // Show game count
-            gameCount.textContent = `${gameFiles.length} Games Found!`;
+            try {
+                // Fetch games from GitHub
+                await fetchGames();
 
-            // Wait for loading animation
-            setTimeout(() => {
+                // Update game count
+                gameCount.textContent = `${games.length} Games Found!`;
+                loadingText.textContent = 'Loading games...';
+
+                // Wait a moment to show the count
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
                 // Create game buttons
                 renderGameButtons();
 
                 // Hide loader and show main content
                 initialLoader.style.display = 'none';
                 mainContent.style.display = 'block';
-            }, 2000);
+
+            } catch (error) {
+                loadingText.textContent = 'Error loading games';
+                gameCount.innerHTML = `<span style="color: #ff0000;">Failed to connect to GitHub</span>`;
+                console.error('Initialization error:', error);
+
+                // Show error and retry button
+                setTimeout(() => {
+                    if (confirm('Failed to load games from GitHub. Retry?')) {
+                        location.reload();
+                    }
+                }, 2000);
+            }
         }
 
         // Render game buttons
         function renderGameButtons() {
             const container = document.getElementById('gameButtons');
             
-            if (gameFiles.length === 0) {
-                container.innerHTML = '<p style="color: #666;">No games configured</p>';
+            if (games.length === 0) {
+                container.innerHTML = '<p style="color: #666;">No games found in repository</p>';
                 return;
             }
 
-            container.innerHTML = gameFiles.map(filename => {
-                const name = formatGameName(filename);
-                return `
-                    <button class="game-button" onclick="loadGame('${filename}', '${name}')">
-                        <span>${name}</span>
-                    </button>
-                `;
-            }).join('');
+            container.innerHTML = games.map(game => `
+                <button class="game-button" onclick="loadGame('${game.filename}', '${game.name}')">
+                    <span>${game.name}</span>
+                </button>
+            `).join('');
         }
 
         // Load game from GitHub
