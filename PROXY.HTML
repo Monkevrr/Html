@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            background: linear-gradient(135deg, #1a0000, #000000);
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -29,7 +29,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            background: linear-gradient(135deg, #1a0000, #000000);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -44,9 +44,9 @@
         }
 
         .initial-spinner {
-            border: 8px solid #333;
-            border-top: 8px solid #ff00ff;
-            border-right: 8px solid #00ffff;
+            border: 8px solid #1a0000;
+            border-top: 8px solid #ff0000;
+            border-right: 8px solid #cc0000;
             border-radius: 50%;
             width: 120px;
             height: 120px;
@@ -61,8 +61,8 @@
 
         .loading-text {
             font-size: 28px;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
             animation: pulse 1.5s ease-in-out infinite;
         }
 
@@ -73,9 +73,9 @@
 
         .game-count {
             font-size: 48px;
-            color: #ff00ff;
+            color: #ff0000;
             margin-top: 20px;
-            text-shadow: 0 0 30px #ff00ff;
+            text-shadow: 0 0 30px #ff0000;
             font-weight: bold;
         }
 
@@ -90,16 +90,16 @@
             margin: 40px 0 30px 0;
             font-size: 48px;
             text-align: center;
-            text-shadow: 2px 2px 8px #ff00ff, -2px -2px 8px #00ffff;
+            text-shadow: 2px 2px 8px #ff0000, -2px -2px 8px #cc0000;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow {
             from {
-                text-shadow: 2px 2px 8px #ff00ff, -2px -2px 8px #00ffff;
+                text-shadow: 2px 2px 8px #ff0000, -2px -2px 8px #cc0000;
             }
             to {
-                text-shadow: 2px 2px 20px #ff00ff, -2px -2px 20px #00ffff;
+                text-shadow: 2px 2px 20px #ff0000, -2px -2px 20px #cc0000;
             }
         }
 
@@ -113,7 +113,7 @@
         }
 
         .game-button {
-            background: linear-gradient(145deg, #ff00ff, #00ffff);
+            background: linear-gradient(145deg, #cc0000, #ff0000);
             border: none;
             padding: 20px 40px;
             font-size: 20px;
@@ -147,7 +147,7 @@
 
         .game-button:hover {
             transform: scale(1.1);
-            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
         }
 
         .game-button span {
@@ -173,9 +173,9 @@
         }
 
         .spinner {
-            border: 8px solid #333;
-            border-top: 8px solid #ff00ff;
-            border-right: 8px solid #00ffff;
+            border: 8px solid #1a0000;
+            border-top: 8px solid #ff0000;
+            border-right: 8px solid #cc0000;
             border-radius: 50%;
             width: 80px;
             height: 80px;
@@ -203,14 +203,14 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px 20px;
-            background: rgba(255, 0, 255, 0.2);
+            background: rgba(255, 0, 0, 0.2);
             border-radius: 10px;
         }
 
         .game-title {
             font-size: 24px;
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
         }
 
         .close-btn {
@@ -234,10 +234,10 @@
         #game-frame {
             width: 100%;
             flex: 1;
-            border: 3px solid #ff00ff;
+            border: 3px solid #ff0000;
             border-radius: 15px;
             background: #000;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
         }
 
         .error-message {
