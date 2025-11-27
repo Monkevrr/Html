@@ -102,7 +102,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             z-index: 200;
             border: 2px solid #ff6666;
         }
@@ -605,6 +605,7 @@
     </style>
 </head>
 <body>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-title">Menu</div>
@@ -631,7 +632,7 @@
         <div id="main-content">
             <!-- Games Section -->
             <div class="content-section active" id="gamesSection">
-                <h1>Game Hub Uhh i did not make any of these games btw so yuh</h1>
+                <h1>Game Hub (I didn’t make any of these games)</h1>
                 <div class="button-container" id="gameButtons"></div>
             </div>
 
@@ -639,12 +640,15 @@
             <div class="content-section" id="proxysSection">
                 <h1>Proxy Zone</h1>
                 <div class="proxy-message">Welcome to the Proxy Zone! 🌐</div>
-                <div class="proxy-list" id="proxyList">
-                    <!-- Proxy items will be dynamically loaded here -->
-                </div>
+                <div class="proxy-list" id="proxyList"></div>
             </div>
         </div>
     </div>
+
+    <!-- Clock -->
+    <div id="clock"
+         style="position:fixed; top:10px; right:20px; font-size:26px; color:#ff0000;
+                font-weight:bold; z-index:5000; text-shadow:0 0 10px #ff0000;"></div>
 
     <!-- Key Input Modal -->
     <div class="key-modal" id="keyModal">
@@ -682,7 +686,7 @@
     <div class="fullscreen-hint" id="fullscreenHint">Press ESC to exit fullscreen</div>
 
     <script>
-        // GitHub Configuration
+        // ----------  GitHub configuration ----------
         const GITHUB_USER = 'Monkevrr';
         const GITHUB_REPO = 'Html';
         const GITHUB_BRANCH = 'main';
@@ -692,24 +696,27 @@
         let currentGame = { filename: '', title: '' };
         let proxyUnlocked = localStorage.getItem('proxyUnlocked') === 'true';
 
-        // Check if proxy is already unlocked on load
-        if (proxyUnlocked) {
-            unlockProxy();
+        // ----------  Clock ----------
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours();
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;                     // convert to 12‑hour
+            document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
         }
+        setInterval(updateClock, 1000);
+        updateClock();   // initial call
 
-        // Switch between sections
+        // ----------  Sidebar navigation ----------
         function switchSection(section) {
-            // Update sidebar active state
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            // update sidebar
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
             event.target.classList.add('active');
 
-            // Update content sections
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-
+            // show the requested content
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
             if (section === 'games') {
                 document.getElementById('gamesSection').classList.add('active');
             } else if (section === 'proxys') {
@@ -717,301 +724,197 @@
             }
         }
 
-        // Check proxy access
+        // ----------  Proxy access ----------
         function checkProxyAccess() {
             if (proxyUnlocked) {
                 switchSection('proxys');
             } else {
                 document.getElementById('keyModal').classList.add('show');
-                document.getElementById('keyInput').value = '';
                 document.getElementById('keyError').textContent = '';
                 document.getElementById('keyInput').focus();
             }
         }
 
-        // Submit key
         function submitKey() {
             const key = document.getElementById('keyInput').value.trim();
-            const errorElement = document.getElementById('keyError');
+            const err = document.getElementById('keyError');
 
             if (key === 'Lebron') {
-                // Correct key
                 proxyUnlocked = true;
                 localStorage.setItem('proxyUnlocked', 'true');
                 unlockProxy();
                 closeKeyModal();
                 switchSection('proxys');
+                // keep the entered text (do NOT clear it)
             } else {
-                // Incorrect key
-                errorElement.textContent = 'Incorrect key! Try again.';
+                err.textContent = 'Incorrect key! Try again.';
                 document.getElementById('keyInput').value = '';
             }
         }
 
-        // Unlock proxy
         function unlockProxy() {
-            const proxysItem = document.getElementById('proxysItem');
-            proxysItem.classList.remove('locked');
-            proxysItem.querySelector('.lock-icon').textContent = '🔓';
+            const item = document.getElementById('proxysItem');
+            item.classList.remove('locked');
+            item.querySelector('.lock-icon').textContent = '🔓';
         }
 
-        // Close key modal
         function closeKeyModal() {
             document.getElementById('keyModal').classList.remove('show');
         }
 
-        // Allow Enter key to submit
-        document.getElementById('keyInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                submitKey();
-            }
+        // Allow Enter to submit the key
+        document.getElementById('keyInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') submitKey();
         });
 
-        // Fetch all HTML files from GitHub repository (excluding proxy files)
+        // ----------  Data fetching ----------
         async function fetchGames() {
-            try {
-                const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
-                
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error(`GitHub API Error: ${response.status}`);
-                }
+            const api = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
+            const res = await fetch(api);
 
-                const data = await response.json();
-                
-                // Filter only .html files and exclude proxy files
-                games = data.tree
-                    .filter(file => 
-                        file.path.endsWith('.html') && 
-                        file.type === 'blob' &&
-                        !file.path.includes('prox/')  // Exclude files from prox folder
-                    )
-                    .map(file => ({
-                        filename: file.path,
-                        name: formatGameName(file.path)
-                    }));
+            if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
 
-                return games;
-            } catch (error) {
-                console.error('Error fetching games:', error);
-                throw error;
-            }
+            const data = await res.json();
+            games = data.tree
+                .filter(f => f.path.endsWith('.html') && f.type === 'blob' && !f.path.includes('prox/'))
+                .map(f => ({
+                    filename: f.path,
+                    name: formatGameName(f.path)
+                }));
+            return games;
         }
 
-        // Fetch proxy HTML files from the 'prox' folder in GitHub repository
         async function fetchProxies() {
-            try {
-                const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/prox?ref=${GITHUB_BRANCH}`;
-                
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error(`GitHub API Error: ${response.status}`);
-                }
+            const api = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/prox?ref=${GITHUB_BRANCH}`;
+            const res = await fetch(api);
 
-                const data = await response.json();
-                
-                // Filter only .html files
-                proxies = data
-                    .filter(file => file.name.endsWith('.html') && file.type === 'file')
-                    .map(file => ({
-                        filename: file.name,
-                        path: file.path,
-                        name: formatProxyName(file.name)
-                    }));
+            if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
 
-                return proxies;
-            } catch (error) {
-                console.error('Error fetching proxies:', error);
-                throw error;
-            }
+            const data = await res.json();
+            proxies = data
+                .filter(f => f.name.endsWith('.html') && f.type === 'file')
+                .map(f => ({
+                    filename: f.name,
+                    path: f.path,
+                    name: formatProxyName(f.name)
+                }));
+            return proxies;
         }
 
-        // Format filename to display name (remove .html and format)
-        function formatGameName(filename) {
-            // Remove .html extension
-            let name = filename.replace('.html', '');
-            
-            // Replace common patterns
+        function formatGameName(path) {
+            let name = path.replace('.html', '');
             name = name.replace('view-page-source.com-', '');
-            name = name.replace(/_/g, ' ');
-            name = name.replace(/-/g, ' ');
+            name = name.replace(/_/g, ' ').replace(/-/g, ' ');
             name = name.replace('.itch.io', '');
-            
-            // Capitalize first letter of each word
-            name = name.split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            return name.split(' ')
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                 .join(' ');
-            
-            return name;
         }
 
-        // Format proxy filename to display name
-        function formatProxyName(filename) {
-            // Remove .html extension
-            let name = filename.replace('.html', '');
-            
-            // Replace underscores and hyphens with spaces
-            name = name.replace(/_/g, ' ');
-            name = name.replace(/-/g, ' ');
-            
-            // Capitalize first letter of each word
-            name = name.split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        function formatProxyName(name) {
+            name = name.replace('.html', '');
+            name = name.replace(/_/g, ' ').replace(/-/g, ' ');
+            return name.split(' ')
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                 .join(' ');
-            
-            return name;
         }
 
-        // Initialize and load games
-        async function initializeLauncher() {
-            const initialLoader = document.getElementById('initial-loader');
-            const mainContent = document.getElementById('main-content');
-            const gameCount = document.getElementById('gameCount');
-            const loadingText = initialLoader.querySelector('.loading-text');
-
-            try {
-                // Fetch games from GitHub
-                await fetchGames();
-
-                // Update game count
-                gameCount.textContent = `${games.length} Games Found!`;
-                loadingText.textContent = 'Loading games...';
-
-                // Wait a moment to show the count
-                await new Promise(resolve => setTimeout(resolve, 1500));
-
-                // Create game buttons
-                renderGameButtons();
-
-                // Hide loader and show main content
-                initialLoader.style.display = 'none';
-                mainContent.style.display = 'block';
-
-            } catch (error) {
-                loadingText.textContent = 'Error loading games';
-                gameCount.innerHTML = `<span style="color: #ff0000;">Failed to connect to GitHub</span>`;
-                console.error('Initialization error:', error);
-
-                // Show error and retry button
-                setTimeout(() => {
-                    if (confirm('Failed to load games from GitHub. Retry?')) {
-                        location.reload();
-                    }
-                }, 2000);
-            }
-        }
-
-        // Render game buttons
+        // ----------  UI rendering ----------
         function renderGameButtons() {
             const container = document.getElementById('gameButtons');
-            
             if (games.length === 0) {
-                container.innerHTML = '<p style="color: #666;">No games found in repository</p>';
+                container.innerHTML = '<p style="color:#666;">No games found.</p>';
                 return;
             }
-
-            container.innerHTML = games.map(game => `
-                <button class="game-button" onclick="loadGame('${game.filename}', '${game.name}')">
-                    <span>${game.name}</span>
-                </button>
-            `).join('');
+            container.innerHTML = games.map(g => `
+                <button class="game-button" onclick="loadGame('${g.filename}', '${g.name}')">
+                    <span>${g.name}</span>
+                </button>`).join('');
         }
 
-        // Render proxy items
         async function renderProxyItems() {
             const container = document.getElementById('proxyList');
-            
             try {
-                // Fetch proxies from GitHub
                 await fetchProxies();
-                
                 if (proxies.length === 0) {
-                    container.innerHTML = '<p style="color: #666; text-align: center;">No proxy files found in the prox folder</p>';
+                    container.innerHTML = '<p style="color:#666;text-align:center;">No proxy files found.</p>';
                     return;
                 }
-
-                container.innerHTML = proxies.map(proxy => `
-                    <div class="proxy-item" onclick="loadProxy('${proxy.path}', '${proxy.name}')">
-                        ${proxy.name}
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error rendering proxies:', error);
-                container.innerHTML = '<p style="color: #ff0000; text-align: center;">Failed to load proxy files</p>';
+                container.innerHTML = proxies.map(p => `
+                    <div class="proxy-item" onclick="loadProxy('${p.path}', '${p.name}')">
+                        ${p.name}
+                    </div>`).join('');
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="color:#ff0000;text-align:center;">Failed to load proxies.</p>';
             }
         }
 
-        // Load game from GitHub
+        // ----------  Game loading ----------
         function loadGame(filename, title) {
             currentGame = { filename, title };
             const loader = document.getElementById('game-loader');
-            const gameContainer = document.getElementById('game-container');
+            const container = document.getElementById('game-container');
             const frame = document.getElementById('game-frame');
             const gameTitle = document.getElementById('currentGameTitle');
 
             const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filename}`;
 
             loader.style.display = 'flex';
-            gameContainer.style.display = 'none';
+            container.style.display = 'none';
 
             fetch(`${url}?t=${Date.now()}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    return response.text();
+                .then(r => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    return r.text();
                 })
                 .then(html => {
                     setTimeout(() => {
                         gameTitle.textContent = title;
                         frame.srcdoc = html;
                         loader.style.display = 'none';
-                        gameContainer.style.display = 'flex';
+                        container.style.display = 'flex';
                     }, 1000);
                 })
                 .catch(err => {
                     loader.style.display = 'none';
                     alert('Failed to load game: ' + err.message);
-                    console.error('Error loading game:', err);
+                    console.error(err);
                 });
         }
 
-        // Load proxy from GitHub
         function loadProxy(filepath, title) {
             currentGame = { filename: filepath, title };
             const loader = document.getElementById('game-loader');
-            const gameContainer = document.getElementById('game-container');
+            const container = document.getElementById('game-container');
             const frame = document.getElementById('game-frame');
             const gameTitle = document.getElementById('currentGameTitle');
 
             const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filepath}`;
 
             loader.style.display = 'flex';
-            gameContainer.style.display = 'none';
+            container.style.display = 'none';
 
             fetch(`${url}?t=${Date.now()}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    return response.text();
+                .then(r => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    return r.text();
                 })
                 .then(html => {
                     setTimeout(() => {
                         gameTitle.textContent = title;
                         frame.srcdoc = html;
                         loader.style.display = 'none';
-                        gameContainer.style.display = 'flex';
+                        container.style.display = 'flex';
                     }, 1000);
                 })
                 .catch(err => {
                     loader.style.display = 'none';
                     alert('Failed to load proxy: ' + err.message);
-                    console.error('Error loading proxy:', err);
+                    console.error(err);
                 });
         }
 
-        // Reload current game
         function reloadGame() {
             if (currentGame.filename) {
                 if (currentGame.filename.includes('prox/')) {
@@ -1022,104 +925,103 @@
             }
         }
 
-        // Toggle fullscreen
         function toggleFullscreen() {
             const gameContainer = document.getElementById('game-container');
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const fullscreenHint = document.getElementById('fullscreenHint');
+            const btn = document.getElementById('fullscreenBtn');
+            const hint = document.getElementById('fullscreenHint');
 
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && 
+            if (!document.fullscreenElement && !document.webkitFullscreenElement &&
                 !document.mozFullScreenElement && !document.msFullscreenElement) {
-                // Enter fullscreen
-                if (gameContainer.requestFullscreen) {
-                    gameContainer.requestFullscreen();
-                } else if (gameContainer.webkitRequestFullscreen) {
-                    gameContainer.webkitRequestFullscreen();
-                } else if (gameContainer.mozRequestFullScreen) {
-                    gameContainer.mozRequestFullScreen();
-                } else if (gameContainer.msRequestFullscreen) {
-                    gameContainer.msRequestFullscreen();
-                }
-                
-                fullscreenBtn.textContent = '⛶ Exit Fullscreen';
-                fullscreenHint.classList.add('show');
-                setTimeout(() => {
-                    fullscreenHint.classList.remove('show');
-                }, 3000);
+                // enter fullscreen
+                if (gameContainer.requestFullscreen) gameContainer.requestFullscreen();
+                else if (gameContainer.webkitRequestFullscreen) gameContainer.webkitRequestFullscreen();
+                else if (gameContainer.mozRequestFullScreen) gameContainer.mozRequestFullScreen();
+                else if (gameContainer.msRequestFullscreen) gameContainer.msRequestFullscreen();
+
+                btn.textContent = '⛶ Exit Fullscreen';
+                hint.classList.add('show');
+                setTimeout(() => hint.classList.remove('show'), 3000);
             } else {
-                // Exit fullscreen
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                
-                fullscreenBtn.textContent = '⛶ Fullscreen';
+                // exit fullscreen
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+
+                btn.textContent = '⛶ Fullscreen';
             }
         }
 
-        // Listen for fullscreen changes
         document.addEventListener('fullscreenchange', updateFullscreenButton);
         document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
         document.addEventListener('mozfullscreenchange', updateFullscreenButton);
         document.addEventListener('MSFullscreenChange', updateFullscreenButton);
 
         function updateFullscreenButton() {
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            if (document.fullscreenElement || document.webkitFullscreenElement || 
-                document.mozFullScreenElement || document.msFullscreenElement) {
-                fullscreenBtn.textContent = '⛶ Exit Fullscreen';
-            } else {
-                fullscreenBtn.textContent = '⛶ Fullscreen';
-            }
+            const btn = document.getElementById('fullscreenBtn');
+            const inFull = document.fullscreenElement || document.webkitFullscreenElement ||
+                            document.mozFullScreenElement || document.msFullscreenElement;
+            btn.textContent = inFull ? '⛶ Exit Fullscreen' : '⛶ Fullscreen';
         }
 
-        // Close game
         function closeGame() {
-            const gameContainer = document.getElementById('game-container');
-            const frame = document.getElementById('game-frame');
-            
-            // Exit fullscreen if active
-            if (document.fullscreenElement || document.webkitFullscreenElement || 
+            // exit fullscreen if active
+            if (document.fullscreenElement || document.webkitFullscreenElement ||
                 document.mozFullScreenElement || document.msFullscreenElement) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
             }
-            
-            gameContainer.style.display = 'none';
-            frame.srcdoc = '';
+
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('game-frame').srcdoc = '';
             currentGame = { filename: '', title: '' };
         }
 
         // Close game with Escape key (only when not in fullscreen)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !document.fullscreenElement && 
-                !document.webkitFullscreenElement && !document.mozFullScreenElement && 
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && !document.fullscreenElement &&
+                !document.webkitFullscreenElement && !document.mozFullScreenElement &&
                 !document.msFullscreenElement) {
                 closeGame();
             }
         });
 
-        // Initialize on page load
-        initializeLauncher();
-        
-        // Load proxy items when proxy section is accessed
-        document.getElementById('proxysItem').addEventListener('click', function() {
-            if (proxyUnlocked) {
-                renderProxyItems();
+        // ----------  Initialization ----------
+        async function initializeLauncher() {
+            const loader = document.getElementById('initial-loader');
+            const main = document.getElementById('main-content');
+            const gameCount = document.getElementById('gameCount');
+            const loadingText = loader.querySelector('.loading-text');
+
+            try {
+                await fetchGames();
+                gameCount.textContent = `${games.length} Games Found!`;
+                loadingText.textContent = 'Loading games...';
+
+                setTimeout(() => {
+                    renderGameButtons();
+                    loader.style.display = 'none';
+                    main.style.display = 'block';
+                }, 1500);
+            } catch (e) {
+                loadingText.textContent = 'Error loading games';
+                gameCount.innerHTML = '<span style="color:#ff0000;">Failed to connect to GitHub</span>';
+                console.error(e);
+                setTimeout(() => {
+                    if (confirm('Failed to load games from GitHub. Retry?')) location.reload();
+                }, 2000);
             }
+        }
+
+        // Load proxy list when the proxy tab becomes visible
+        document.getElementById('proxysItem').addEventListener('click', () => {
+            if (proxyUnlocked) renderProxyItems();
         });
+
+        // Start everything
+        initializeLauncher();
     </script>
 </body>
 </html>
