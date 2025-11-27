@@ -358,6 +358,7 @@
             border-radius: 10px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
         }
 
         .proxy-item a {
@@ -638,19 +639,8 @@
             <div class="content-section" id="proxysSection">
                 <h1>Proxy Zone</h1>
                 <div class="proxy-message">Welcome to the Proxy Zone! 🌐</div>
-                <div class="proxy-list">
-                    <div class="proxy-item">
-                        <a href="https://www.croxyproxy.com/" target="_blank">CroxyProxy</a>
-                    </div>
-                    <div class="proxy-item">
-                        <a href="https://www.proxysite.com/" target="_blank">ProxySite</a>
-                    </div>
-                    <div class="proxy-item">
-                        <a href="https://hide.me/en/proxy" target="_blank">Hide.me</a>
-                    </div>
-                    <div class="proxy-item">
-                        <a href="https://www.hidester.com/proxy/" target="_blank">Hidester</a>
-                    </div>
+                <div class="proxy-list" id="proxyList">
+                    <!-- Proxy items will be dynamically loaded here -->
                 </div>
             </div>
         </div>
@@ -698,6 +688,7 @@
         const GITHUB_BRANCH = 'main';
 
         let games = [];
+        let proxies = [];
         let currentGame = { filename: '', title: '' };
         let proxyUnlocked = localStorage.getItem('proxyUnlocked') === 'true';
 
@@ -803,6 +794,34 @@
             }
         }
 
+        // Fetch proxy HTML files from the 'prox' folder in GitHub repository
+        async function fetchProxies() {
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/prox?ref=${GITHUB_BRANCH}`;
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`GitHub API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Filter only .html files
+                proxies = data
+                    .filter(file => file.name.endsWith('.html') && file.type === 'file')
+                    .map(file => ({
+                        filename: file.name,
+                        path: file.path,
+                        name: formatProxyName(file.name)
+                    }));
+
+                return proxies;
+            } catch (error) {
+                console.error('Error fetching proxies:', error);
+                throw error;
+            }
+        }
+
         // Format filename to display name (remove .html and format)
         function formatGameName(filename) {
             // Remove .html extension
@@ -813,6 +832,23 @@
             name = name.replace(/_/g, ' ');
             name = name.replace(/-/g, ' ');
             name = name.replace('.itch.io', '');
+            
+            // Capitalize first letter of each word
+            name = name.split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            
+            return name;
+        }
+
+        // Format proxy filename to display name
+        function formatProxyName(filename) {
+            // Remove .html extension
+            let name = filename.replace('.html', '');
+            
+            // Replace underscores and hyphens with spaces
+            name = name.replace(/_/g, ' ');
+            name = name.replace(/-/g, ' ');
             
             // Capitalize first letter of each word
             name = name.split(' ')
@@ -877,6 +913,30 @@
             `).join('');
         }
 
+        // Render proxy items
+        async function renderProxyItems() {
+            const container = document.getElementById('proxyList');
+            
+            try {
+                // Fetch proxies from GitHub
+                await fetchProxies();
+                
+                if (proxies.length === 0) {
+                    container.innerHTML = '<p style="color: #666; text-align: center;">No proxy files found in the prox folder</p>';
+                    return;
+                }
+
+                container.innerHTML = proxies.map(proxy => `
+                    <div class="proxy-item" onclick="loadProxy('${proxy.path}', '${proxy.name}')">
+                        ${proxy.name}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error rendering proxies:', error);
+                container.innerHTML = '<p style="color: #ff0000; text-align: center;">Failed to load proxy files</p>';
+            }
+        }
+
         // Load game from GitHub
         function loadGame(filename, title) {
             currentGame = { filename, title };
@@ -912,10 +972,49 @@
                 });
         }
 
+        // Load proxy from GitHub
+        function loadProxy(filepath, title) {
+            currentGame = { filename: filepath, title };
+            const loader = document.getElementById('game-loader');
+            const gameContainer = document.getElementById('game-container');
+            const frame = document.getElementById('game-frame');
+            const gameTitle = document.getElementById('currentGameTitle');
+
+            const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filepath}`;
+
+            loader.style.display = 'flex';
+            gameContainer.style.display = 'none';
+
+            fetch(`${url}?t=${Date.now()}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    setTimeout(() => {
+                        gameTitle.textContent = title;
+                        frame.srcdoc = html;
+                        loader.style.display = 'none';
+                        gameContainer.style.display = 'flex';
+                    }, 1000);
+                })
+                .catch(err => {
+                    loader.style.display = 'none';
+                    alert('Failed to load proxy: ' + err.message);
+                    console.error('Error loading proxy:', err);
+                });
+        }
+
         // Reload current game
         function reloadGame() {
             if (currentGame.filename) {
-                loadGame(currentGame.filename, currentGame.title);
+                if (currentGame.filename.includes('prox/')) {
+                    loadProxy(currentGame.filename, currentGame.title);
+                } else {
+                    loadGame(currentGame.filename, currentGame.title);
+                }
             }
         }
 
@@ -1010,6 +1109,13 @@
 
         // Initialize on page load
         initializeLauncher();
+        
+        // Load proxy items when proxy section is accessed
+        document.getElementById('proxysItem').addEventListener('click', function() {
+            if (proxyUnlocked) {
+                renderProxyItems();
+            }
+        });
     </script>
 </body>
 </html>
