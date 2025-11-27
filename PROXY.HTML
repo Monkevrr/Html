@@ -16,10 +16,120 @@
             background: linear-gradient(135deg, #1a0000, #000000);
             color: #fff;
             display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #330000, #1a0000);
+            border-right: 3px solid #ff0000;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 5px 0 20px rgba(255, 0, 0, 0.3);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-title {
+            font-size: 28px;
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff0000;
+            font-weight: bold;
+        }
+
+        .sidebar-item {
+            position: relative;
+            background: linear-gradient(145deg, #cc0000, #ff0000);
+            border: 2px solid #ff0000;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
+            background: linear-gradient(145deg, #ff0000, #ff3333);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(145deg, #ff0000, #ff6666);
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        }
+
+        .sidebar-item.locked {
+            background: linear-gradient(145deg, #666, #999);
+            border-color: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .sidebar-item.locked:hover {
+            transform: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .lock-icon {
+            margin-left: 5px;
+            font-size: 16px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            left: 260px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 0, 0, 0.95);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            border: 2px solid #ff6666;
+        }
+
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 8px solid transparent;
+            border-right-color: #ff0000;
+        }
+
+        .sidebar-item:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* Main Content Area */
+        .main-wrapper {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
         /* Initial Loading Screen */
@@ -145,7 +255,15 @@
         #main-content {
             display: none;
             width: 100%;
-            padding: 20px;
+        }
+
+        .content-section {
+            display: none;
+            width: 100%;
+        }
+
+        .content-section.active {
+            display: block;
         }
 
         h1 {
@@ -215,6 +333,117 @@
         .game-button span {
             position: relative;
             z-index: 1;
+        }
+
+        /* Proxy Content */
+        .proxy-message {
+            text-align: center;
+            font-size: 24px;
+            color: #ff0000;
+            margin-top: 50px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .proxy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .proxy-item {
+            background: linear-gradient(145deg, #cc0000, #ff0000);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .proxy-item a {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .proxy-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Key Input Modal */
+        .key-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .key-modal.show {
+            display: flex;
+        }
+
+        .key-modal-content {
+            background: linear-gradient(145deg, #1a0000, #330000);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .key-modal-content h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            font-size: 32px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .key-input {
+            padding: 15px;
+            font-size: 20px;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            background: #000;
+            color: #fff;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .key-submit {
+            background: linear-gradient(145deg, #cc0000, #ff0000);
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .key-cancel {
+            background: linear-gradient(145deg, #666, #999);
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .key-error {
+            color: #ff0000;
+            margin-top: 10px;
+            font-size: 16px;
         }
 
         /* Game Loading Overlay */
@@ -333,13 +562,6 @@
             border: none;
         }
 
-        .error-message {
-            color: #ff0000;
-            font-size: 20px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
         /* Fullscreen hint */
         .fullscreen-hint {
             position: fixed;
@@ -358,20 +580,93 @@
         .fullscreen-hint.show {
             display: block;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-wrapper {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .tooltip {
+                left: 210px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Initial Loading Screen -->
-    <div id="initial-loader">
-        <div class="initial-spinner"></div>
-        <div class="loading-text">Scanning for games...</div>
-        <div class="game-count" id="gameCount"></div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-title">Menu</div>
+        <div class="sidebar-item active" onclick="switchSection('games')">
+            Games
+            <div class="tooltip">Games are games</div>
+        </div>
+        <div class="sidebar-item locked" id="proxysItem" onclick="checkProxyAccess()">
+            Proxys <span class="lock-icon">🔒</span>
+            <div class="tooltip">Proxys are websites that have browsers built in them</div>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <div id="main-content">
-        <h1>🎮 Game Launcher</h1>
-        <div class="button-container" id="gameButtons"></div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Initial Loading Screen -->
+        <div id="initial-loader">
+            <div class="initial-spinner"></div>
+            <div class="loading-text">Scanning for games...</div>
+            <div class="game-count" id="gameCount"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content">
+            <!-- Games Section -->
+            <div class="content-section active" id="gamesSection">
+                <h1>Game Hub Uhh i did not make any of these games btw so yuh</h1>
+                <div class="button-container" id="gameButtons"></div>
+            </div>
+
+            <!-- Proxys Section -->
+            <div class="content-section" id="proxysSection">
+                <h1>Proxy Zone</h1>
+                <div class="proxy-message">Welcome to the Proxy Zone! 🌐</div>
+                <div class="proxy-list">
+                    <div class="proxy-item">
+                        <a href="https://www.croxyproxy.com/" target="_blank">CroxyProxy</a>
+                    </div>
+                    <div class="proxy-item">
+                        <a href="https://www.proxysite.com/" target="_blank">ProxySite</a>
+                    </div>
+                    <div class="proxy-item">
+                        <a href="https://hide.me/en/proxy" target="_blank">Hide.me</a>
+                    </div>
+                    <div class="proxy-item">
+                        <a href="https://www.hidester.com/proxy/" target="_blank">Hidester</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Input Modal -->
+    <div class="key-modal" id="keyModal">
+        <div class="key-modal-content">
+            <h2>Enter Access Key</h2>
+            <input type="text" class="key-input" id="keyInput" placeholder="Enter key...">
+            <div class="key-error" id="keyError"></div>
+            <div>
+                <button class="key-submit" onclick="submitKey()">Submit</button>
+                <button class="key-cancel" onclick="closeKeyModal()">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <!-- Game Loading Overlay -->
@@ -404,6 +699,82 @@
 
         let games = [];
         let currentGame = { filename: '', title: '' };
+        let proxyUnlocked = localStorage.getItem('proxyUnlocked') === 'true';
+
+        // Check if proxy is already unlocked on load
+        if (proxyUnlocked) {
+            unlockProxy();
+        }
+
+        // Switch between sections
+        function switchSection(section) {
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content sections
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+
+            if (section === 'games') {
+                document.getElementById('gamesSection').classList.add('active');
+            } else if (section === 'proxys') {
+                document.getElementById('proxysSection').classList.add('active');
+            }
+        }
+
+        // Check proxy access
+        function checkProxyAccess() {
+            if (proxyUnlocked) {
+                switchSection('proxys');
+            } else {
+                document.getElementById('keyModal').classList.add('show');
+                document.getElementById('keyInput').value = '';
+                document.getElementById('keyError').textContent = '';
+                document.getElementById('keyInput').focus();
+            }
+        }
+
+        // Submit key
+        function submitKey() {
+            const key = document.getElementById('keyInput').value.trim();
+            const errorElement = document.getElementById('keyError');
+
+            if (key === 'Lebron') {
+                // Correct key
+                proxyUnlocked = true;
+                localStorage.setItem('proxyUnlocked', 'true');
+                unlockProxy();
+                closeKeyModal();
+                switchSection('proxys');
+            } else {
+                // Incorrect key
+                errorElement.textContent = 'Incorrect key! Try again.';
+                document.getElementById('keyInput').value = '';
+            }
+        }
+
+        // Unlock proxy
+        function unlockProxy() {
+            const proxysItem = document.getElementById('proxysItem');
+            proxysItem.classList.remove('locked');
+            proxysItem.querySelector('.lock-icon').textContent = '🔓';
+        }
+
+        // Close key modal
+        function closeKeyModal() {
+            document.getElementById('keyModal').classList.remove('show');
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('keyInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitKey();
+            }
+        });
 
         // Fetch all HTML files from GitHub repository
         async function fetchGames() {
