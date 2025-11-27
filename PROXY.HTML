@@ -767,7 +767,7 @@
             }
         });
 
-        // Fetch all HTML files from GitHub repository
+        // Fetch all HTML files from GitHub repository (excluding proxy files)
         async function fetchGames() {
             try {
                 const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
@@ -779,9 +779,13 @@
 
                 const data = await response.json();
                 
-                // Filter only .html files
+                // Filter only .html files and exclude proxy files
                 games = data.tree
-                    .filter(file => file.path.endsWith('.html') && file.type === 'blob')
+                    .filter(file => 
+                        file.path.endsWith('.html') && 
+                        file.type === 'blob' &&
+                        !file.path.includes('prox/')  // Exclude files from prox folder
+                    )
                     .map(file => ({
                         filename: file.path,
                         name: formatGameName(file.path)
