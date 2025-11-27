@@ -79,6 +79,46 @@
             font-weight: bold;
         }
 
+        .error-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            max-width: 600px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .error-details h3 {
+            color: #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .error-details p {
+            margin: 5px 0;
+            color: #ccc;
+        }
+
+        .retry-btn {
+            margin-top: 20px;
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .retry-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+        }
+
         /* Main Content */
         #main-content {
             display: none;
@@ -183,6 +223,25 @@
 
         .refresh-btn.rotating {
             animation: spin 1s linear infinite;
+        }
+
+        /* Config Button */
+        .config-btn {
+            background: linear-gradient(145deg, #666, #888);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            margin-right: 10px;
+        }
+
+        .config-btn:hover {
+            transform: scale(1.05);
         }
 
         /* Game Loading Overlay */
@@ -301,14 +360,94 @@
             border: none;
         }
 
-        .error-message {
-            color: #ff0000;
-            font-size: 20px;
-            text-align: center;
-            margin-top: 20px;
+        /* Config Modal */
+        #config-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
         }
 
-        /* Fullscreen notification */
+        .modal-content {
+            background: linear-gradient(135deg, #1a0000, #000000);
+            border: 3px solid #ff0000;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+        }
+
+        .modal-content h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ff0000;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6666;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .modal-btn.save {
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            color: #fff;
+        }
+
+        .modal-btn.cancel {
+            background: linear-gradient(145deg, #666, #888);
+            color: #fff;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
         .fullscreen-hint {
             position: fixed;
             bottom: 20px;
@@ -334,11 +473,14 @@
         <div class="initial-spinner"></div>
         <div class="loading-text">Scanning for games...</div>
         <div class="game-count" id="gameCount"></div>
+        <div class="error-details" id="errorDetails" style="display: none;"></div>
+        <button class="retry-btn" id="retryBtn" style="display: none;" onclick="location.reload()">🔄 Retry</button>
     </div>
 
     <!-- Main Content -->
     <div id="main-content">
         <div class="refresh-container">
+            <button class="config-btn" onclick="showConfig()">⚙️ Config</button>
             <button class="refresh-btn" id="refreshBtn" onclick="refreshGames()">🔄 Refresh</button>
         </div>
         <h1>🎮 Game Launcher</h1>
@@ -364,35 +506,98 @@
         <iframe id="game-frame"></iframe>
     </div>
 
+    <!-- Config Modal -->
+    <div id="config-modal">
+        <div class="modal-content">
+            <h2>⚙️ Configuration</h2>
+            <div class="form-group">
+                <label for="github-user">GitHub Username:</label>
+                <input type="text" id="github-user" placeholder="Enter GitHub username">
+            </div>
+            <div class="form-group">
+                <label for="github-repo">Repository Name:</label>
+                <input type="text" id="github-repo" placeholder="Enter repository name">
+            </div>
+            <div class="form-group">
+                <label for="github-branch">Branch:</label>
+                <input type="text" id="github-branch" placeholder="Enter branch name (default: main)">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn save" onclick="saveConfig()">💾 Save & Reload</button>
+                <button class="modal-btn cancel" onclick="hideConfig()">✖ Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Fullscreen hint -->
     <div class="fullscreen-hint" id="fullscreenHint">Press ESC to exit fullscreen</div>
 
     <script>
-        // GitHub Configuration
-        const GITHUB_USER = 'Monkevrr';
-        const GITHUB_REPO = 'Html';
-        const GITHUB_BRANCH = 'main';
+        // Default GitHub Configuration
+        let GITHUB_USER = localStorage.getItem('gh_user') || 'Monkevrr';
+        let GITHUB_REPO = localStorage.getItem('gh_repo') || 'Html';
+        let GITHUB_BRANCH = localStorage.getItem('gh_branch') || 'main';
 
         let games = [];
         let currentGame = { filename: '', title: '' };
+
+        // Show config modal
+        function showConfig() {
+            const modal = document.getElementById('config-modal');
+            document.getElementById('github-user').value = GITHUB_USER;
+            document.getElementById('github-repo').value = GITHUB_REPO;
+            document.getElementById('github-branch').value = GITHUB_BRANCH;
+            modal.style.display = 'flex';
+        }
+
+        // Hide config modal
+        function hideConfig() {
+            document.getElementById('config-modal').style.display = 'none';
+        }
+
+        // Save config
+        function saveConfig() {
+            GITHUB_USER = document.getElementById('github-user').value.trim() || 'Monkevrr';
+            GITHUB_REPO = document.getElementById('github-repo').value.trim() || 'Html';
+            GITHUB_BRANCH = document.getElementById('github-branch').value.trim() || 'main';
+            
+            localStorage.setItem('gh_user', GITHUB_USER);
+            localStorage.setItem('gh_repo', GITHUB_REPO);
+            localStorage.setItem('gh_branch', GITHUB_BRANCH);
+            
+            hideConfig();
+            location.reload();
+        }
 
         // Fetch all HTML files from GitHub repository
         async function fetchGames() {
             try {
                 const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
                 
+                console.log('Fetching from:', apiUrl);
+                
                 const response = await fetch(apiUrl, {
                     cache: 'no-cache',
                     headers: {
-                        'Cache-Control': 'no-cache'
+                        'Cache-Control': 'no-cache',
+                        'Accept': 'application/vnd.github.v3+json'
                     }
                 });
                 
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error(`GitHub API Error: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`GitHub API Error ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
+                console.log('Received data:', data);
+                
+                if (!data.tree) {
+                    throw new Error('Invalid response from GitHub API');
+                }
                 
                 // Filter only .html files
                 games = data.tree
@@ -402,6 +607,7 @@
                         name: formatGameName(file.path)
                     }));
 
+                console.log(`Found ${games.length} games`);
                 return games;
             } catch (error) {
                 console.error('Error fetching games:', error);
@@ -409,23 +615,49 @@
             }
         }
 
-        // Format filename to display name (remove .html and format)
+        // Format filename to display name
         function formatGameName(filename) {
-            // Remove .html extension
             let name = filename.replace('.html', '');
-            
-            // Replace common patterns
             name = name.replace('view-page-source.com-', '');
             name = name.replace(/_/g, ' ');
             name = name.replace(/-/g, ' ');
             name = name.replace('.itch.io', '');
-            
-            // Capitalize first letter of each word
             name = name.split(' ')
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');
-            
             return name;
+        }
+
+        // Show error details
+        function showError(error) {
+            const errorDetails = document.getElementById('errorDetails');
+            const loadingText = document.querySelector('.loading-text');
+            const gameCount = document.getElementById('gameCount');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            loadingText.textContent = 'Error loading games';
+            gameCount.innerHTML = `<span style="color: #ff0000;">Failed to connect to GitHub</span>`;
+            
+            errorDetails.innerHTML = `
+                <h3>🔍 Debug Information:</h3>
+                <p><strong>Error:</strong> ${error.message}</p>
+                <p><strong>Repository:</strong> ${GITHUB_USER}/${GITHUB_REPO}</p>
+                <p><strong>Branch:</strong> ${GITHUB_BRANCH}</p>
+                <p><strong>API URL:</strong> https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}</p>
+                <hr style="margin: 15px 0; border-color: #ff0000;">
+                <p><strong>Possible causes:</strong></p>
+                <p>• Repository doesn't exist or is private</p>
+                <p>• GitHub API rate limit reached</p>
+                <p>• Network/CORS restrictions</p>
+                <p>• Incorrect repository details</p>
+                <hr style="margin: 15px 0; border-color: #ff0000;">
+                <p><strong>Try:</strong></p>
+                <p>• Check repository exists: <a href="https://github.com/${GITHUB_USER}/${GITHUB_REPO}" target="_blank" style="color: #66ccff;">github.com/${GITHUB_USER}/${GITHUB_REPO}</a></p>
+                <p>• Click Config button to update settings</p>
+                <p>• Check browser console (F12) for details</p>
+            `;
+            errorDetails.style.display = 'block';
+            retryBtn.style.display = 'inline-block';
         }
 
         // Initialize and load games
@@ -436,34 +668,15 @@
             const loadingText = initialLoader.querySelector('.loading-text');
 
             try {
-                // Fetch games from GitHub
                 await fetchGames();
-
-                // Update game count
                 gameCount.textContent = `${games.length} Games Found!`;
                 loadingText.textContent = 'Loading games...';
-
-                // Wait a moment to show the count
                 await new Promise(resolve => setTimeout(resolve, 1500));
-
-                // Create game buttons
                 renderGameButtons();
-
-                // Hide loader and show main content
                 initialLoader.style.display = 'none';
                 mainContent.style.display = 'block';
-
             } catch (error) {
-                loadingText.textContent = 'Error loading games';
-                gameCount.innerHTML = `<span style="color: #ff0000;">Failed to connect to GitHub</span>`;
-                console.error('Initialization error:', error);
-
-                // Show error and retry button
-                setTimeout(() => {
-                    if (confirm('Failed to load games from GitHub. Retry?')) {
-                        location.reload();
-                    }
-                }, 2000);
+                showError(error);
             }
         }
 
@@ -472,12 +685,12 @@
             const container = document.getElementById('gameButtons');
             
             if (games.length === 0) {
-                container.innerHTML = '<p style="color: #666;">No games found in repository</p>';
+                container.innerHTML = '<p style="color: #ff6666; font-size: 20px;">No HTML games found in repository</p>';
                 return;
             }
 
             container.innerHTML = games.map(game => `
-                <button class="game-button" onclick="loadGame('${game.filename}', '${game.name}')">
+                <button class="game-button" onclick="loadGame('${game.filename.replace(/'/g, "\\'")}', '${game.name.replace(/'/g, "\\'")}')">
                     <span>${game.name}</span>
                 </button>
             `).join('');
@@ -493,7 +706,6 @@
                 await fetchGames();
                 renderGameButtons();
                 
-                // If a game is currently loaded, reload it to get the latest version
                 if (currentGame.filename) {
                     console.log('Reloading current game with latest version...');
                     loadGameContent(currentGame.filename, currentGame.title);
@@ -571,7 +783,6 @@
 
             if (!document.fullscreenElement && !document.webkitFullscreenElement && 
                 !document.mozFullScreenElement && !document.msFullscreenElement) {
-                // Enter fullscreen
                 if (gameContainer.requestFullscreen) {
                     gameContainer.requestFullscreen();
                 } else if (gameContainer.webkitRequestFullscreen) {
@@ -588,7 +799,6 @@
                     fullscreenHint.classList.remove('show');
                 }, 3000);
             } else {
-                // Exit fullscreen
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) {
@@ -624,7 +834,6 @@
             const gameContainer = document.getElementById('game-container');
             const frame = document.getElementById('game-frame');
             
-            // Exit fullscreen if in fullscreen mode
             if (document.fullscreenElement || document.webkitFullscreenElement || 
                 document.mozFullScreenElement || document.msFullscreenElement) {
                 if (document.exitFullscreen) {
@@ -645,10 +854,13 @@
 
         // Close game with Escape key (when not in fullscreen)
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !document.fullscreenElement && 
-                !document.webkitFullscreenElement && !document.mozFullScreenElement && 
-                !document.msFullscreenElement) {
-                closeGame();
+            if (e.key === 'Escape') {
+                if (document.getElementById('config-modal').style.display === 'flex') {
+                    hideConfig();
+                } else if (!document.fullscreenElement && !document.webkitFullscreenElement && 
+                    !document.mozFullScreenElement && !document.msFullscreenElement) {
+                    closeGame();
+                }
             }
         });
 
