@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Launcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -18,6 +19,18 @@
             display: flex;
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        /* Snow Canvas */
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            mix-blend-mode: screen;
         }
 
         /* Sidebar */
@@ -582,6 +595,40 @@
             display: block;
         }
 
+        /* Clock & Battery Widget */
+        #statusBar {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 5000;
+            font-size: 20px;
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        #batteryWidget {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(255, 0, 0, 0.15);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+
+        #batteryWidget i {
+            font-size: 22px;
+        }
+
+        #batteryChargingIcon {
+            color: #00ff00;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -601,10 +648,19 @@
                 left: 210px;
                 font-size: 12px;
             }
+
+            #statusBar {
+                flex-direction: column;
+                gap: 10px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Snow Canvas -->
+    <canvas id="snowCanvas"></canvas>
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -632,7 +688,7 @@
         <div id="main-content">
             <!-- Games Section -->
             <div class="content-section active" id="gamesSection">
-                <h1>Game Hub (I didn’t make any of these games)</h1>
+                <h1>Game Hub (I didn't make any of these games)</h1>
                 <div class="button-container" id="gameButtons"></div>
             </div>
 
@@ -645,10 +701,15 @@
         </div>
     </div>
 
-    <!-- Clock -->
-    <div id="clock"
-         style="position:fixed; top:10px; right:20px; font-size:26px; color:#ff0000;
-                font-weight:bold; z-index:5000; text-shadow:0 0 10px #ff0000;"></div>
+    <!-- Status Bar (Clock & Battery) -->
+    <div id="statusBar">
+        <div id="clock"></div>
+        <div id="batteryWidget">
+            <i id="batteryIcon" class="fa-solid fa-battery-full"></i>
+            <span id="batteryLevel">100%</span>
+            <i id="batteryChargingIcon" class="fa-solid fa-bolt" style="display: none;"></i>
+        </div>
+    </div>
 
     <!-- Key Input Modal -->
     <div class="key-modal" id="keyModal">
@@ -686,6 +747,80 @@
     <div class="fullscreen-hint" id="fullscreenHint">Press ESC to exit fullscreen</div>
 
     <script>
+        // ----------  Snow Effect ----------
+        var canvas = document.getElementById("snowCanvas");
+        var ctx = canvas.getContext("2d");
+        var snowflakes = [];
+        var snowConfig = {
+            count: 150,
+            size: 3,
+            speed: 1.2,
+            color: "#ffffff"
+        };
+
+        function resizeCanvas() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        function createSnow(count, size) {
+            snowflakes = [];
+            for (var i = 0; i < count; i++) {
+                snowflakes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * size + 0.5,
+                    d: Math.random() * 1.5 + 0.2,
+                    sway: Math.random() * 2 * Math.PI,
+                    swayAmp: Math.random() * 20
+                });
+            }
+        }
+
+        function hexToRGBA(hex, alpha) {
+            alpha = alpha || 1;
+            if (!hex) return "rgba(255,255,255," + alpha + ")";
+            var h = hex.replace("#", "");
+            var num = parseInt(h, 16);
+            var r = (num >> 16) & 255;
+            var g = (num >> 8) & 255;
+            var b = num & 255;
+            return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.fillStyle = hexToRGBA(snowConfig.color || "#ffffff", 0.95);
+
+            if (snowflakes.length !== snowConfig.count) {
+                createSnow(snowConfig.count, snowConfig.size);
+            }
+
+            for (var i = 0; i < snowflakes.length; i++) {
+                var flake = snowflakes[i];
+                ctx.moveTo(flake.x, flake.y);
+                ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+                flake.y += flake.d * snowConfig.speed;
+                flake.sway += 0.01 + Math.random() * 0.02;
+                flake.x += Math.sin(flake.sway) * 0.6;
+
+                if (flake.y > canvas.height + 20) {
+                    flake.x = Math.random() * canvas.width;
+                    flake.y = -10 - Math.random() * 40;
+                }
+                if (flake.x > canvas.width + 50) flake.x = -20;
+                if (flake.x < -50) flake.x = canvas.width + 20;
+            }
+            ctx.fill();
+            requestAnimationFrame(drawSnow);
+        }
+
+        createSnow(snowConfig.count, snowConfig.size);
+        drawSnow();
+
         // ----------  GitHub configuration ----------
         const GITHUB_USER = 'Monkevrr';
         const GITHUB_REPO = 'Html';
@@ -703,19 +838,55 @@
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;                     // convert to 12‑hour
+            h = h % 12 || 12;
             document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
         }
         setInterval(updateClock, 1000);
-        updateClock();   // initial call
+        updateClock();
+
+        // ----------  Battery Status ----------
+        async function updateBatteryStatus() {
+            var widget = document.getElementById("batteryWidget");
+            if (!widget) return;
+            
+            if ("getBattery" in navigator) {
+                try {
+                    var battery = await navigator.getBattery();
+                    var updateAll = function() {
+                        var level = Math.round(battery.level * 100);
+                        var batteryLevel = document.getElementById("batteryLevel");
+                        var batteryChargingIcon = document.getElementById("batteryChargingIcon");
+                        var batteryIcon = document.getElementById("batteryIcon");
+                        
+                        if (batteryLevel) batteryLevel.textContent = level + "%";
+                        if (batteryChargingIcon) batteryChargingIcon.style.display = battery.charging ? "inline-block" : "none";
+                        
+                        if (batteryIcon) {
+                            if (battery.charging) batteryIcon.className = "fa-solid fa-battery-full";
+                            else if (level > 85) batteryIcon.className = "fa-solid fa-battery-full";
+                            else if (level > 60) batteryIcon.className = "fa-solid fa-battery-three-quarters";
+                            else if (level > 35) batteryIcon.className = "fa-solid fa-battery-half";
+                            else if (level > 10) batteryIcon.className = "fa-solid fa-battery-quarter";
+                            else batteryIcon.className = "fa-solid fa-battery-empty";
+                        }
+                    };
+                    updateAll();
+                    battery.addEventListener("levelchange", updateAll);
+                    battery.addEventListener("chargingchange", updateAll);
+                } catch (e) {
+                    widget.style.display = "none";
+                }
+            } else {
+                widget.style.display = "none";
+            }
+        }
+        updateBatteryStatus();
 
         // ----------  Sidebar navigation ----------
         function switchSection(section) {
-            // update sidebar
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
             event.target.classList.add('active');
 
-            // show the requested content
             document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
             if (section === 'games') {
                 document.getElementById('gamesSection').classList.add('active');
@@ -745,7 +916,6 @@
                 unlockProxy();
                 closeKeyModal();
                 switchSection('proxys');
-                // keep the entered text (do NOT clear it)
             } else {
                 err.textContent = 'Incorrect key! Try again.';
                 document.getElementById('keyInput').value = '';
@@ -762,7 +932,6 @@
             document.getElementById('keyModal').classList.remove('show');
         }
 
-        // Allow Enter to submit the key
         document.getElementById('keyInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') submitKey();
         });
@@ -932,7 +1101,6 @@
 
             if (!document.fullscreenElement && !document.webkitFullscreenElement &&
                 !document.mozFullScreenElement && !document.msFullscreenElement) {
-                // enter fullscreen
                 if (gameContainer.requestFullscreen) gameContainer.requestFullscreen();
                 else if (gameContainer.webkitRequestFullscreen) gameContainer.webkitRequestFullscreen();
                 else if (gameContainer.mozRequestFullScreen) gameContainer.mozRequestFullScreen();
@@ -942,7 +1110,6 @@
                 hint.classList.add('show');
                 setTimeout(() => hint.classList.remove('show'), 3000);
             } else {
-                // exit fullscreen
                 if (document.exitFullscreen) document.exitFullscreen();
                 else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
                 else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
@@ -965,7 +1132,6 @@
         }
 
         function closeGame() {
-            // exit fullscreen if active
             if (document.fullscreenElement || document.webkitFullscreenElement ||
                 document.mozFullScreenElement || document.msFullscreenElement) {
                 if (document.exitFullscreen) document.exitFullscreen();
@@ -979,7 +1145,6 @@
             currentGame = { filename: '', title: '' };
         }
 
-        // Close game with Escape key (only when not in fullscreen)
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && !document.fullscreenElement &&
                 !document.webkitFullscreenElement && !document.mozFullScreenElement &&
@@ -1015,12 +1180,12 @@
             }
         }
 
-        // Load proxy list when the proxy tab becomes visible
         document.getElementById('proxysItem').addEventListener('click', () => {
             if (proxyUnlocked) renderProxyItems();
         });
 
-        // Start everything
+        if (proxyUnlocked) unlockProxy();
+
         initializeLauncher();
     </script>
 </body>
