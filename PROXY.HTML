@@ -444,6 +444,12 @@
             font-size: 16px;
         }
 
+        /* Bug Report Form Button Hover */
+        #bugReportForm button[type="submit"]:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px var(--glowColor);
+        }
+
         /* Proxy Content */
         .proxy-message {
             text-align: center;
@@ -869,6 +875,10 @@
             Proxys <span class="lock-icon">🔒</span>
             <div class="tooltip">Proxys are websites that have browsers built in them</div>
         </div>
+        <div class="sidebar-item locked" id="testingItem" onclick="checkTestingAccess()">
+            Testing <span class="lock-icon-testing">🔒</span>
+            <div class="tooltip">Report broken games</div>
+        </div>
         <div class="sidebar-item" onclick="switchSection('settings')">
             Settings
             <div class="tooltip">Customize your experience</div>
@@ -945,6 +955,35 @@
                         <div class="shortcut-hint">
                             Press <strong>Ctrl + 1</strong> to open this link instantly and hide what you're doing
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testing Section -->
+            <div class="content-section" id="testingSection">
+                <h1>Game Testing & Bug Reports</h1>
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h2>🐛 Report a Broken Game</h2>
+                        <p style="color: var(--muted); margin-bottom: 20px;">Help us fix broken games by reporting them here!</p>
+                        
+                        <form id="bugReportForm" onsubmit="submitBugReport(event)" style="max-width: 600px;">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Your Name:</label>
+                                <input type="text" id="reporterName" required placeholder="Enter your name" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);">
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Game Name (that doesn't work):</label>
+                                <input type="text" id="brokenGame" required placeholder="Enter the game name" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);">
+                            </div>
+
+                            <button type="submit" style="background: linear-gradient(145deg, var(--accentDark), var(--accent)); border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 10px; cursor: pointer; color: #fff; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                                📤 Submit Report
+                            </button>
+                        </form>
+
+                        <div id="reportStatus" style="margin-top: 20px; padding: 15px; border-radius: 10px; display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -1350,6 +1389,7 @@
         let proxies = [];
         let currentGame = { filename: '', title: '' };
         let proxyUnlocked = localStorage.getItem('proxyUnlocked') === 'true';
+        let testingUnlocked = localStorage.getItem('testingUnlocked') === 'true';
 
         // ----------  Clock ----------
         function updateClock() {
@@ -1435,6 +1475,8 @@
                 document.getElementById('gamesSection').classList.add('active');
             } else if (section === 'proxys') {
                 document.getElementById('proxysSection').classList.add('active');
+            } else if (section === 'testing') {
+                document.getElementById('testingSection').classList.add('active');
             } else if (section === 'settings') {
                 document.getElementById('settingsSection').classList.add('active');
             }
@@ -1480,6 +1522,112 @@
         document.getElementById('keyInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') submitKey();
         });
+
+        // ----------  Testing access ----------
+        function checkTestingAccess() {
+            if (testingUnlocked) {
+                switchSection('testing');
+            } else {
+                const password = prompt('Enter password to access Testing:');
+                if (password === 'snowy') {
+                    testingUnlocked = true;
+                    localStorage.setItem('testingUnlocked', 'true');
+                    unlockTesting();
+                    switchSection('testing');
+                } else if (password !== null) {
+                    alert('Incorrect password!');
+                }
+            }
+        }
+
+        function unlockTesting() {
+            const item = document.getElementById('testingItem');
+            item.classList.remove('locked');
+            item.querySelector('.lock-icon-testing').textContent = '🔓';
+        }
+
+        // ----------  Bug Report Submission ----------
+        async function submitBugReport(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('reporterName').value.trim();
+            const game = document.getElementById('brokenGame').value.trim();
+            const statusDiv = document.getElementById('reportStatus');
+            
+            if (!name || !game) {
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = 'rgba(255, 0, 0, 0.2)';
+                statusDiv.style.border = '2px solid var(--accent)';
+                statusDiv.style.color = 'var(--accent)';
+                statusDiv.textContent = '❌ Please fill out all fields!';
+                return;
+            }
+
+            // Show loading state
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = 'rgba(255, 255, 0, 0.2)';
+            statusDiv.style.border = '2px solid #ffff00';
+            statusDiv.style.color = '#ffff00';
+            statusDiv.textContent = '⏳ Sending report...';
+
+            try {
+                const webhookUrl = 'https://discord.com/api/webhooks/1444868852340101140/3ZuwhdOnqT09hmGT83PA3IX5hvqJipoCAlLOSWdCBT7kHi696xp0c40LiAyQ_3b0PkFy';
+                
+                const payload = {
+                    embeds: [{
+                        title: '🐛 Bug Report - Broken Game',
+                        color: 0xff0000,
+                        fields: [
+                            {
+                                name: '👤 Reporter',
+                                value: name,
+                                inline: true
+                            },
+                            {
+                                name: '🎮 Broken Game',
+                                value: game,
+                                inline: true
+                            }
+                        ],
+                        timestamp: new Date().toISOString(),
+                        footer: {
+                            text: 'Game Launcher Bug Report'
+                        }
+                    }]
+                };
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok || response.status === 204) {
+                    statusDiv.style.background = 'rgba(0, 255, 0, 0.2)';
+                    statusDiv.style.border = '2px solid #00ff00';
+                    statusDiv.style.color = '#00ff00';
+                    statusDiv.textContent = '✅ Report submitted successfully! Thank you!';
+                    
+                    // Clear form
+                    document.getElementById('bugReportForm').reset();
+                } else {
+                    throw new Error('Failed to send report');
+                }
+            } catch (error) {
+                console.error('Error submitting bug report:', error);
+                statusDiv.style.background = 'rgba(255, 0, 0, 0.2)';
+                statusDiv.style.border = '2px solid var(--accent)';
+                statusDiv.style.color = 'var(--accent)';
+                statusDiv.textContent = '❌ Failed to submit report. Please try again.';
+            }
+
+            // Hide status after 5 seconds
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
 
         // ----------  Data fetching ----------
         async function fetchGames() {
@@ -1744,6 +1892,7 @@
         });
 
         if (proxyUnlocked) unlockProxy();
+        if (testingUnlocked) unlockTesting();
 
         initializeLauncher();
     </script>
