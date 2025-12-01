@@ -12,10 +12,29 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg: #1a0000;
+            --header: #330000;
+            --text: #fff;
+            --muted: #ccc;
+            --accent: #ff0000;
+            --accentDark: #cc0000;
+            --glowColor: #ff0000;
+            --cardBg: #1a0000;
+            --cardRadius: 15px;
+            --glowSize: 20px;
+            --glowStrength: 0.3;
+            --fontFamily: 'Arial', sans-serif;
+            --snowColor: #ffffff;
+            --snowCount: 150;
+            --snowSize: 3;
+            --snowSpeed: 1.2;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a0000, #000000);
-            color: #fff;
+            font-family: var(--fontFamily);
+            background: linear-gradient(135deg, var(--bg), #000000);
+            color: var(--text);
             display: flex;
             min-height: 100vh;
             overflow-x: hidden;
@@ -36,8 +55,8 @@
         /* Sidebar */
         .sidebar {
             width: 250px;
-            background: linear-gradient(180deg, #330000, #1a0000);
-            border-right: 3px solid #ff0000;
+            background: linear-gradient(180deg, var(--header), var(--bg));
+            border-right: 3px solid var(--accent);
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -46,21 +65,22 @@
             position: fixed;
             height: 100vh;
             z-index: 100;
+            overflow-y: auto;
         }
 
         .sidebar-title {
             font-size: 28px;
-            color: #ff0000;
+            color: var(--accent);
             text-align: center;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 10px var(--accent);
             font-weight: bold;
         }
 
         .sidebar-item {
             position: relative;
-            background: linear-gradient(145deg, #cc0000, #ff0000);
-            border: 2px solid #ff0000;
+            background: linear-gradient(145deg, var(--accentDark), var(--accent));
+            border: 2px solid var(--accent);
             padding: 15px 20px;
             border-radius: 10px;
             cursor: pointer;
@@ -73,12 +93,12 @@
 
         .sidebar-item:hover {
             transform: translateX(10px);
-            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
-            background: linear-gradient(145deg, #ff0000, #ff3333);
+            box-shadow: 0 6px 20px var(--glowColor);
+            filter: brightness(1.2);
         }
 
         .sidebar-item.active {
-            background: linear-gradient(145deg, #ff0000, #ff6666);
+            filter: brightness(1.3);
             border-color: #ffff00;
             box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
         }
@@ -152,7 +172,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a0000, #000000);
+            background: linear-gradient(135deg, var(--bg), #000000);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -187,17 +207,17 @@
         }
 
         .initial-spinner::before {
-            border-top-color: #ff0000;
-            border-right-color: #cc0000;
+            border-top-color: var(--accent);
+            border-right-color: var(--accentDark);
             animation: spin3d 1.5s linear infinite;
-            box-shadow: 0 0 30px #ff0000, inset 0 0 20px rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 30px var(--accent), inset 0 0 20px var(--glowColor);
         }
 
         .initial-spinner::after {
-            border-bottom-color: #ff6666;
-            border-left-color: #990000;
+            border-bottom-color: var(--glowColor);
+            border-left-color: var(--accentDark);
             animation: spin3d 2s linear infinite reverse;
-            box-shadow: 0 0 20px #cc0000, inset 0 0 15px rgba(204, 0, 0, 0.3);
+            box-shadow: 0 0 20px var(--accentDark);
         }
 
         @keyframes spin3d {
@@ -219,15 +239,11 @@
 
         .loading-text {
             font-size: 28px;
-            color: #ff0000;
+            color: var(--accent);
             text-shadow: 
-                1px 1px 0px #cc0000,
-                2px 2px 0px #990000,
-                3px 3px 0px #660000,
-                4px 4px 0px #330000,
-                5px 5px 10px rgba(0, 0, 0, 0.8),
-                0 0 20px #ff0000,
-                0 0 40px rgba(255, 0, 0, 0.5);
+                1px 1px 0px var(--accentDark),
+                0 0 20px var(--accent),
+                0 0 40px var(--glowColor);
             animation: pulse 1.5s ease-in-out infinite;
             font-weight: bold;
             letter-spacing: 2px;
@@ -246,19 +262,11 @@
 
         .game-count {
             font-size: 48px;
-            color: #ff0000;
+            color: var(--accent);
             margin-top: 20px;
             text-shadow: 
-                1px 1px 0px #cc0000,
-                2px 2px 0px #aa0000,
-                3px 3px 0px #880000,
-                4px 4px 0px #660000,
-                5px 5px 0px #440000,
-                6px 6px 0px #220000,
-                7px 7px 15px rgba(0, 0, 0, 0.9),
-                0 0 30px #ff0000,
-                0 0 50px rgba(255, 0, 0, 0.6),
-                0 0 70px rgba(255, 0, 0, 0.3);
+                0 0 30px var(--accent),
+                0 0 50px var(--glowColor);
             font-weight: bold;
             letter-spacing: 3px;
             transform-style: preserve-3d;
@@ -283,16 +291,16 @@
             margin: 40px 0 30px 0;
             font-size: 48px;
             text-align: center;
-            text-shadow: 2px 2px 8px #ff0000, -2px -2px 8px #cc0000;
+            text-shadow: 2px 2px 8px var(--accent), -2px -2px 8px var(--accentDark);
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow {
             from {
-                text-shadow: 2px 2px 8px #ff0000, -2px -2px 8px #cc0000;
+                text-shadow: 2px 2px 8px var(--accent), -2px -2px 8px var(--accentDark);
             }
             to {
-                text-shadow: 2px 2px 20px #ff0000, -2px -2px 20px #cc0000;
+                text-shadow: 2px 2px 20px var(--accent), -2px -2px 20px var(--accentDark);
             }
         }
 
@@ -306,12 +314,12 @@
         }
 
         .game-button {
-            background: linear-gradient(145deg, #cc0000, #ff0000);
+            background: linear-gradient(145deg, var(--accentDark), var(--accent));
             border: none;
             padding: 20px 40px;
             font-size: 20px;
             font-weight: bold;
-            border-radius: 15px;
+            border-radius: var(--cardRadius);
             cursor: pointer;
             color: #fff;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -340,7 +348,7 @@
 
         .game-button:hover {
             transform: scale(1.1);
-            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 10px 30px var(--glowColor);
         }
 
         .game-button span {
@@ -348,13 +356,104 @@
             z-index: 1;
         }
 
+        /* Settings Section */
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .settings-section {
+            background: var(--cardBg);
+            border-radius: var(--cardRadius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .settings-section h2 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .theme-option {
+            background: linear-gradient(145deg, var(--accentDark), var(--accent));
+            border: 2px solid var(--accent);
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px var(--glowColor);
+        }
+
+        .theme-option.selected {
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+        }
+
+        .theme-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 24px;
+            color: #ffff00;
+        }
+
+        .teacher-link-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .teacher-link {
+            display: inline-block;
+            background: linear-gradient(145deg, var(--accentDark), var(--accent));
+            color: white;
+            text-decoration: none;
+            padding: 20px 40px;
+            border-radius: var(--cardRadius);
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid var(--accent);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .teacher-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px var(--glowColor);
+        }
+
+        .shortcut-hint {
+            margin-top: 15px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
         /* Proxy Content */
         .proxy-message {
             text-align: center;
             font-size: 24px;
-            color: #ff0000;
+            color: var(--accent);
             margin-top: 50px;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 10px var(--accent);
         }
 
         .proxy-list {
@@ -366,7 +465,7 @@
         }
 
         .proxy-item {
-            background: linear-gradient(145deg, #cc0000, #ff0000);
+            background: linear-gradient(145deg, var(--accentDark), var(--accent));
             padding: 20px;
             border-radius: 10px;
             text-align: center;
@@ -383,7 +482,7 @@
 
         .proxy-item:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 10px 30px var(--glowColor);
         }
 
         /* Key Input Modal */
@@ -405,25 +504,25 @@
         }
 
         .key-modal-content {
-            background: linear-gradient(145deg, #1a0000, #330000);
+            background: linear-gradient(145deg, var(--bg), var(--header));
             padding: 40px;
             border-radius: 20px;
-            border: 3px solid #ff0000;
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.8);
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 50px var(--glowColor);
             text-align: center;
         }
 
         .key-modal-content h2 {
-            color: #ff0000;
+            color: var(--accent);
             margin-bottom: 20px;
             font-size: 32px;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 10px var(--accent);
         }
 
         .key-input {
             padding: 15px;
             font-size: 20px;
-            border: 2px solid #ff0000;
+            border: 2px solid var(--accent);
             border-radius: 10px;
             background: #000;
             color: #fff;
@@ -432,7 +531,7 @@
         }
 
         .key-submit {
-            background: linear-gradient(145deg, #cc0000, #ff0000);
+            background: linear-gradient(145deg, var(--accentDark), var(--accent));
             border: none;
             padding: 15px 40px;
             font-size: 20px;
@@ -455,7 +554,7 @@
         }
 
         .key-error {
-            color: #ff0000;
+            color: var(--accent);
             margin-top: 10px;
             font-size: 16px;
         }
@@ -478,9 +577,9 @@
         }
 
         .spinner {
-            border: 8px solid #1a0000;
-            border-top: 8px solid #ff0000;
-            border-right: 8px solid #cc0000;
+            border: 8px solid var(--bg);
+            border-top: 8px solid var(--accent);
+            border-right: 8px solid var(--accentDark);
             border-radius: 50%;
             width: 80px;
             height: 80px;
@@ -495,7 +594,7 @@
             padding: 20px;
             background: rgba(255, 0, 0, 0.1);
             border-radius: 15px;
-            border: 2px solid rgba(255, 0, 0, 0.3);
+            border: 2px solid var(--accent);
         }
 
         .verse-text {
@@ -508,9 +607,9 @@
 
         .verse-reference {
             font-size: 16px;
-            color: #ff6666;
+            color: var(--glowColor);
             font-weight: bold;
-            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 5px var(--glowColor);
         }
 
         /* Game Container */
@@ -549,7 +648,7 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px 20px;
-            background: rgba(255, 0, 0, 0.2);
+            background: var(--cardBg);
             border-radius: 10px;
         }
 
@@ -560,8 +659,8 @@
 
         .game-title {
             font-size: 24px;
-            color: #ff0000;
-            text-shadow: 0 0 10px #ff0000;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
         }
 
         .header-buttons {
@@ -570,7 +669,7 @@
         }
 
         .control-btn {
-            background: linear-gradient(145deg, #ff0000, #cc0000);
+            background: linear-gradient(145deg, var(--accent), var(--accentDark));
             border: none;
             padding: 10px 25px;
             font-size: 18px;
@@ -584,16 +683,16 @@
 
         .control-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 8px 20px var(--glowColor);
         }
 
         #game-frame {
             width: 100%;
             flex: 1;
-            border: 3px solid #ff0000;
+            border: 3px solid var(--accent);
             border-radius: 15px;
             background: #000;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 30px var(--glowColor);
         }
 
         #game-container:fullscreen #game-frame {
@@ -607,7 +706,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 0, 0, 0.9);
+            background: var(--accent);
             padding: 10px 20px;
             border-radius: 10px;
             font-size: 14px;
@@ -630,9 +729,9 @@
             gap: 20px;
             z-index: 5000;
             font-size: 20px;
-            color: #ff0000;
+            color: var(--accent);
             font-weight: bold;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 10px var(--accent);
         }
 
         #batteryWidget {
@@ -640,9 +739,9 @@
             align-items: center;
             gap: 8px;
             padding: 8px 15px;
-            background: rgba(255, 0, 0, 0.15);
+            background: var(--cardBg);
             border-radius: 20px;
-            border: 2px solid rgba(255, 0, 0, 0.3);
+            border: 2px solid var(--accent);
         }
 
         #batteryWidget i {
@@ -664,23 +763,23 @@
             gap: 5px;
             z-index: 5000;
             padding: 10px 20px;
-            background: rgba(255, 0, 0, 0.15);
+            background: var(--cardBg);
             border-radius: 15px;
-            border: 2px solid rgba(255, 0, 0, 0.3);
+            border: 2px solid var(--accent);
         }
 
         .device-name {
             font-size: 16px;
-            color: #ff0000;
+            color: var(--accent);
             font-weight: bold;
-            text-shadow: 0 0 8px #ff0000;
+            text-shadow: 0 0 8px var(--accent);
         }
 
         .managed-by {
             font-size: 13px;
-            color: #ff6666;
+            color: var(--muted);
             font-weight: normal;
-            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 5px var(--glowColor);
         }
 
         .device-icon {
@@ -726,6 +825,10 @@
             .managed-by {
                 font-size: 11px;
             }
+
+            .theme-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -744,6 +847,10 @@
         <div class="sidebar-item locked" id="proxysItem" onclick="checkProxyAccess()">
             Proxys <span class="lock-icon">🔒</span>
             <div class="tooltip">Proxys are websites that have browsers built in them</div>
+        </div>
+        <div class="sidebar-item" onclick="switchSection('settings')">
+            Settings
+            <div class="tooltip">Customize your experience</div>
         </div>
     </div>
 
@@ -769,6 +876,29 @@
                 <h1>Proxy Zone</h1>
                 <div class="proxy-message">Welcome to the Proxy Zone! 🌐</div>
                 <div class="proxy-list" id="proxyList"></div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="content-section" id="settingsSection">
+                <h1>Settings</h1>
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h2>🎨 Theme Selection</h2>
+                        <p style="color: var(--muted); margin-bottom: 15px;">Choose your favorite theme to customize the launcher's appearance:</p>
+                        <div class="theme-grid" id="themeGrid"></div>
+                    </div>
+
+                    <div class="settings-section teacher-link-section">
+                        <h2>🚨 Quick Links</h2>
+                        <p style="color: var(--muted); margin-bottom: 20px;">Need to switch screens fast?</p>
+                        <a href="https://classroom.google.com" class="teacher-link" id="teacherLink" target="_blank">
+                            Teacher Coming!
+                        </a>
+                        <div class="shortcut-hint">
+                            Press <strong>Ctrl + 1</strong> to open this link instantly
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -832,6 +962,91 @@
     <div class="fullscreen-hint" id="fullscreenHint">Press ESC to exit fullscreen</div>
 
     <script>
+        // ---------- Theme Data ----------
+        const themes = {
+            "midnight_blossom": {"bg":"#1a1023","header":"#2a1738","text":"#f8eaff","muted":"#d7c6e6","accent":"#ff7bda","accentDark":"#b30088","glowColor":"#ffb3ef","cardBg":"#261332","cardRadius":12,"glowSize":28,"glowStrength":0.55,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffcdf5","snowCount":130,"snowSize":3,"snowSpeed":1.4},
+            "emerald_peak": {"bg":"#051914","header":"#0b2c22","text":"#dcfff5","muted":"#b9e6d2","accent":"#4cffc1","accentDark":"#158f6b","glowColor":"#77ffd9","cardBg":"#0f3b2c","cardRadius":14,"glowSize":22,"glowStrength":0.4,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#a8ffe5","snowCount":110,"snowSize":3,"snowSpeed":1.2},
+            "solar_flare": {"bg":"#2a0b00","header":"#4d1300","text":"#ffe6d4","muted":"#ffc4a1","accent":"#ff5e00","accentDark":"#a63500","glowColor":"#ff9e66","cardBg":"#3b0f00","cardRadius":10,"glowSize":33,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ff7033","snowCount":85,"snowSize":4,"snowSpeed":1.7},
+            "frostbyte": {"bg":"#02131e","header":"#062738","text":"#ddf7ff","muted":"#b8e5f2","accent":"#52d7ff","accentDark":"#1e7da3","glowColor":"#b8f5ff","cardBg":"#0a2c40","cardRadius":18,"glowSize":25,"glowStrength":0.52,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#cff7ff","snowCount":200,"snowSize":2,"snowSpeed":1.1},
+            "bubblegum_dream": {"bg":"#ffdef2","header":"#ffd1ee","text":"#5e004a","muted":"#8a006b","accent":"#ff77cf","accentDark":"#d1008d","glowColor":"#ffb0e8","cardBg":"#ffd8ef","cardRadius":20,"glowSize":20,"glowStrength":0.4,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ff87d9","snowCount":50,"snowSize":5,"snowSpeed":0.8},
+            "radioactive_neon": {"bg":"#031301","header":"#062705","text":"#dfffda","muted":"#b9e6bc","accent":"#39ff14","accentDark":"#1faf08","glowColor":"#7dff67","cardBg":"#0b3d09","cardRadius":10,"glowSize":40,"glowStrength":0.9,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#7fff52","snowCount":150,"snowSize":3,"snowSpeed":1.6},
+            "sunset_sorbet": {"bg":"#3b0f1c","header":"#5c1830","text":"#ffeef5","muted":"#ffbfd5","accent":"#ff668f","accentDark":"#b33252","glowColor":"#ff9cb5","cardBg":"#471427","cardRadius":15,"glowSize":30,"glowStrength":0.5,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffb6ce","snowCount":120,"snowSize":3,"snowSpeed":1.3},
+            "cafe_mocha": {"bg":"#2a1a10","header":"#3b2415","text":"#ffe8d8","muted":"#d9c3b5","accent":"#b87445","accentDark":"#7c4c2d","glowColor":"#d8a986","cardBg":"#351f13","cardRadius":12,"glowSize":18,"glowStrength":0.38,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#c59c7a","snowCount":60,"snowSize":4,"snowSpeed":0.9},
+            "aqua_wave": {"bg":"#001a26","header":"#003344","text":"#dcf8ff","muted":"#b9e6f2","accent":"#3ddcff","accentDark":"#117d99","glowColor":"#8af0ff","cardBg":"#002a38","cardRadius":16,"glowSize":26,"glowStrength":0.58,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#a8f6ff","snowCount":140,"snowSize":3,"snowSpeed":1.4},
+            "moonlight_silver": {"bg":"#0f0f14","header":"#1a1a22","text":"#f2f2f6","muted":"#bcbcc6","accent":"#9ea4ff","accentDark":"#5056c8","glowColor":"#c4c7ff","cardBg":"#16161d","cardRadius":12,"glowSize":28,"glowStrength":0.5,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#d3d6ff","snowCount":120,"snowSize":3,"snowSpeed":1.2},
+            "jungle_mist": {"bg":"#0b1f12","header":"#153423","text":"#e8ffe8","muted":"#cceccc","accent":"#66ff8c","accentDark":"#27994a","glowColor":"#99ffc0","cardBg":"#102a1a","cardRadius":14,"glowSize":22,"glowStrength":0.43,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#b6ffd2","snowCount":90,"snowSize":3,"snowSpeed":1.3},
+            "ocean_dusk": {"bg":"#001224","header":"#002544","text":"#dff2ff","muted":"#b8d7e6","accent":"#6cb8ff","accentDark":"#2c6ba3","glowColor":"#a3d7ff","cardBg":"#001d33","cardRadius":18,"glowSize":24,"glowStrength":0.45,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#bcdfff","snowCount":160,"snowSize":2,"snowSpeed":1.1},
+            "pink_frost": {"bg":"#2b0d1f","header":"#471634","text":"#ffdff5","muted":"#f1b9d8","accent":"#ff7ec4","accentDark":"#b24284","glowColor":"#ffb2dc","cardBg":"#3b122a","cardRadius":16,"glowSize":34,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffc2e6","snowCount":150,"snowSize":3,"snowSpeed":1.5},
+            "techno_grid": {"bg":"#0a0a0f","header":"#15151f","text":"#e3e9ff","muted":"#b7c0e6","accent":"#40bbff","accentDark":"#1778a3","glowColor":"#89d8ff","cardBg":"#12121a","cardRadius":12,"glowSize":36,"glowStrength":0.75,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#66ccff","snowCount":180,"snowSize":3,"snowSpeed":1.6},
+            "sunny_field": {"bg":"#fff8d9","header":"#ffeeb3","text":"#663e00","muted":"#8c5c1a","accent":"#ffcc33","accentDark":"#c78a00","glowColor":"#ffe57a","cardBg":"#fff1bf","cardRadius":20,"glowSize":20,"glowStrength":0.35,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffe28a","snowCount":50,"snowSize":4,"snowSpeed":0.9},
+            "mint_leaf": {"bg":"#e6fff4","header":"#c6ffe6","text":"#004d33","muted":"#267359","accent":"#33ffb8","accentDark":"#0fa36e","glowColor":"#8cffd7","cardBg":"#d2ffe8","cardRadius":18,"glowSize":18,"glowStrength":0.32,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#a0ffe6","snowCount":40,"snowSize":5,"snowSpeed":0.7},
+            "void_shadow": {"bg":"#000000","header":"#0a0a0a","text":"#e6e6e6","muted":"#999999","accent":"#5a5a5a","accentDark":"#2a2a2a","glowColor":"#bbbbbb","cardBg":"#080808","cardRadius":10,"glowSize":40,"glowStrength":0.8,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#cccccc","snowCount":200,"snowSize":2,"snowSpeed":1.2},
+            "ruby_crystal": {"bg":"#290001","header":"#400002","text":"#ffe5e8","muted":"#ffb3bb","accent":"#ff3355","accentDark":"#a30024","glowColor":"#ff8899","cardBg":"#320002","cardRadius":14,"glowSize":32,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ff99aa","snowCount":130,"snowSize":3,"snowSpeed":1.6},
+            "arctic_bloom": {"bg":"#f2fcff","header":"#dff8ff","text":"#004f63","muted":"#1b6e84","accent":"#53dfff","accentDark":"#0c8ba3","glowColor":"#9eeeff","cardBg":"#e7f9ff","cardRadius":18,"glowSize":18,"glowStrength":0.3,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#bbf2ff","snowCount":60,"snowSize":4,"snowSpeed":0.9},
+            "honey_glow": {"bg":"#2a1900","header":"#412600","text":"#ffefcc","muted":"#ddc7a1","accent":"#ffb300","accentDark":"#a67300","glowColor":"#ffd677","cardBg":"#352000","cardRadius":12,"glowSize":26,"glowStrength":0.46,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffcf87","snowCount":100,"snowSize":3,"snowSpeed":1.2},
+            "acid_punch": {"bg":"#12001a","header":"#260033","text":"#ffe6ff","muted":"#d9b3e6","accent":"#ff00cc","accentDark":"#99007a","glowColor":"#ff80dd","cardBg":"#1c0026","cardRadius":16,"glowSize":38,"glowStrength":0.72,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffaae8","snowCount":150,"snowSize":3,"snowSpeed":1.5},
+            "arctic_night": {"bg":"#06080f","header":"#0b1120","text":"#dde6ff","muted":"#a7b4d9","accent":"#5577ff","accentDark":"#2a3c99","glowColor":"#9bb5ff","cardBg":"#090d14","cardRadius":10,"glowSize":27,"glowStrength":0.55,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#c3d2ff","snowCount":170,"snowSize":3,"snowSpeed":1.4},
+            "rainforest_dew": {"bg":"#0d1f17","header":"#123026","text":"#e0fff3","muted":"#bee6d8","accent":"#4cffac","accentDark":"#1d8f64","glowColor":"#92ffd3","cardBg":"#102a20","cardRadius":14,"glowSize":24,"glowStrength":0.42,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#b6ffe1","snowCount":100,"snowSize":3,"snowSpeed":1.2},
+            "candy_arcade": {"bg":"#230011","header":"#3b001b","text":"#ffebf3","muted":"#ffc4db","accent":"#ff4fa4","accentDark":"#a30062","glowColor":"#ff9bcf","cardBg":"#310016","cardRadius":18,"glowSize":36,"glowStrength":0.7,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffb4da","snowCount":140,"snowSize":3,"snowSpeed":1.5},
+            "obsidian_gold": {"bg":"#0a0905","header":"#1a180f","text":"#f7e7bf","muted":"#d4c193","accent":"#e6b400","accentDark":"#9c7d00","glowColor":"#ffe680","cardBg":"#12110a","cardRadius":12,"glowSize":28,"glowStrength":0.55,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#f5d97c","snowCount":100,"snowSize":3,"snowSpeed":1.3},
+            "glacial_berry": {"bg":"#1e0033","header":"#32004f","text":"#f4e6ff","muted":"#d4b3f7","accent":"#bf59ff","accentDark":"#7826a6","glowColor":"#d9a3ff","cardBg":"#290041","cardRadius":15,"glowSize":33,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#e7c3ff","snowCount":145,"snowSize":3,"snowSpeed":1.5},
+            "lavender_fade": {"bg":"#f4edff","header":"#e9ddff","text":"#3b2b66","muted":"#695a91","accent":"#b899ff","accentDark":"#6f59b3","glowColor":"#d2c2ff","cardBg":"#ede3ff","cardRadius":20,"glowSize":20,"glowStrength":0.33,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#d8caff","snowCount":60,"snowSize":4,"snowSpeed":0.8}
+        };
+
+        let currentTheme = localStorage.getItem('selectedTheme') || 'midnight_blossom';
+
+        // ---------- Theme Functions ----------
+        function applyTheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            root.style.setProperty('--bg', theme.bg);
+            root.style.setProperty('--header', theme.header);
+            root.style.setProperty('--text', theme.text);
+            root.style.setProperty('--muted', theme.muted);
+            root.style.setProperty('--accent', theme.accent);
+            root.style.setProperty('--accentDark', theme.accentDark);
+            root.style.setProperty('--glowColor', theme.glowColor);
+            root.style.setProperty('--cardBg', theme.cardBg);
+            root.style.setProperty('--cardRadius', theme.cardRadius + 'px');
+            root.style.setProperty('--glowSize', theme.glowSize + 'px');
+            root.style.setProperty('--glowStrength', theme.glowStrength);
+            root.style.setProperty('--fontFamily', theme.fontFamily);
+            root.style.setProperty('--snowColor', theme.snowColor);
+
+            // Update snow config
+            snowConfig.color = theme.snowColor;
+            snowConfig.count = theme.snowCount;
+            snowConfig.size = theme.snowSize;
+            snowConfig.speed = theme.snowSpeed;
+
+            currentTheme = themeName;
+            localStorage.setItem('selectedTheme', themeName);
+
+            // Update theme grid selection
+            updateThemeSelection();
+        }
+
+        function updateThemeSelection() {
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.dataset.theme === currentTheme) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function renderThemeGrid() {
+            const grid = document.getElementById('themeGrid');
+            grid.innerHTML = Object.keys(themes).map(key => {
+                const displayName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                return `<div class="theme-option ${key === currentTheme ? 'selected' : ''}" data-theme="${key}" onclick="applyTheme('${key}')">
+                    ${displayName}
+                </div>`;
+            }).join('');
+        }
+
         // ----------  Snow Effect ----------
         var canvas = document.getElementById("snowCanvas");
         var ctx = canvas.getContext("2d");
@@ -908,14 +1123,12 @@
 
         // ----------  Device Information ----------
         function getDeviceName() {
-            // Try to get actual device name from browser APIs
             const platform = navigator.platform || 'Unknown';
             const userAgent = navigator.userAgent;
             
             let deviceName = '';
             
             if (userAgent.includes('CrOS')) {
-                // Chromebook - try to extract model info
                 const match = userAgent.match(/CrOS\s+\w+\s+([\w-]+)/);
                 if (match) {
                     deviceName = 'Chromebook-' + match[1];
@@ -943,15 +1156,11 @@
         async function detectManagement() {
             const userAgent = navigator.userAgent;
             
-            // Detect if device is managed
             if (userAgent.includes('CrOS')) {
-                // Chromebook - likely managed by a school/organization
                 return 'Managed by School';
             } else if (navigator.managed) {
-                // Enterprise managed browser
                 return 'Managed by Organization';
             } else {
-                // Not managed or unable to detect
                 return 'Personal Device';
             }
         }
@@ -969,7 +1178,6 @@
             }
         }
 
-        // Call on load
         updateDeviceInfo();
 
         // ----------  Bible Verses ----------
@@ -1061,6 +1269,25 @@
         }
         updateBatteryStatus();
 
+        // ----------  Keyboard Shortcuts ----------
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + 1 for teacher link
+            if (e.ctrlKey && e.key === '1') {
+                e.preventDefault();
+                const link = document.getElementById('teacherLink');
+                if (link) {
+                    window.open(link.href, '_blank');
+                }
+            }
+
+            // ESC to close game
+            if (e.key === 'Escape' && !document.fullscreenElement &&
+                !document.webkitFullscreenElement && !document.mozFullScreenElement &&
+                !document.msFullscreenElement) {
+                closeGame();
+            }
+        });
+
         // ----------  Sidebar navigation ----------
         function switchSection(section) {
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
@@ -1071,6 +1298,8 @@
                 document.getElementById('gamesSection').classList.add('active');
             } else if (section === 'proxys') {
                 document.getElementById('proxysSection').classList.add('active');
+            } else if (section === 'settings') {
+                document.getElementById('settingsSection').classList.add('active');
             }
         }
 
@@ -1222,12 +1451,13 @@
                     return r.text();
                 })
                 .then(html => {
+                    // Changed from 1000ms to 5000ms (5 seconds) so people can read the verse
                     setTimeout(() => {
                         gameTitle.textContent = title;
                         frame.srcdoc = html;
                         loader.style.display = 'none';
                         container.style.display = 'flex';
-                    }, 1000);
+                    }, 5000);
                 })
                 .catch(err => {
                     loader.style.display = 'none';
@@ -1259,12 +1489,13 @@
                     return r.text();
                 })
                 .then(html => {
+                    // Changed from 1000ms to 5000ms (5 seconds) so people can read the verse
                     setTimeout(() => {
                         gameTitle.textContent = title;
                         frame.srcdoc = html;
                         loader.style.display = 'none';
                         container.style.display = 'flex';
-                    }, 1000);
+                    }, 5000);
                 })
                 .catch(err => {
                     loader.style.display = 'none';
@@ -1334,20 +1565,16 @@
             currentGame = { filename: '', title: '' };
         }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && !document.fullscreenElement &&
-                !document.webkitFullscreenElement && !document.mozFullScreenElement &&
-                !document.msFullscreenElement) {
-                closeGame();
-            }
-        });
-
         // ----------  Initialization ----------
         async function initializeLauncher() {
             const loader = document.getElementById('initial-loader');
             const main = document.getElementById('main-content');
             const gameCount = document.getElementById('gameCount');
             const loadingText = loader.querySelector('.loading-text');
+
+            // Apply saved theme
+            applyTheme(currentTheme);
+            renderThemeGrid();
 
             try {
                 await fetchGames();
