@@ -71,15 +71,6 @@
             z-index: 100;
         }
 
-        .sidebar-title {
-            font-size: 24px;
-            color: var(--accent);
-            text-align: center;
-            margin-right: 30px;
-            text-shadow: 0 0 10px var(--accent);
-            font-weight: bold;
-        }
-
         .sidebar-item {
             position: relative;
             background: linear-gradient(145deg, var(--accentDark), var(--accent));
@@ -130,8 +121,8 @@
             top: 100%;
             transform: translateX(-50%);
             margin-top: 10px;
-            background: rgba(255, 0, 0, 0.95);
-            color: white;
+            background: var(--accent);
+            color: var(--text);
             padding: 10px 15px;
             border-radius: 8px;
             font-size: 13px;
@@ -141,7 +132,7 @@
             transition: opacity 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             z-index: 200;
-            border: 2px solid #ff6666;
+            border: 2px solid var(--glowColor);
         }
 
         .tooltip::before {
@@ -151,7 +142,7 @@
             left: 50%;
             transform: translateX(-50%);
             border: 8px solid transparent;
-            border-bottom-color: #ff0000;
+            border-bottom-color: var(--accent);
         }
 
         .sidebar-item:hover .tooltip {
@@ -738,16 +729,18 @@
 
         #clock {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 2px;
             padding: 8px 15px;
             background: var(--cardBg);
             border-radius: 20px;
             border: 2px solid var(--accent);
-            font-size: 20px;
+            font-size: 16px;
             color: var(--accent);
             font-weight: bold;
             text-shadow: 0 0 10px var(--accent);
+            line-height: 1.2;
         }
 
         #batteryWidget {
@@ -815,13 +808,6 @@
                 gap: 10px;
             }
 
-            .sidebar-title {
-                width: 100%;
-                margin-right: 0;
-                margin-bottom: 10px;
-                font-size: 20px;
-            }
-
             .sidebar-item {
                 padding: 10px 15px;
                 font-size: 14px;
@@ -875,7 +861,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-title">Menu</div>
         <div class="sidebar-item active" onclick="switchSection('games')">
             Games
             <div class="tooltip">Games are games</div>
@@ -924,23 +909,41 @@
                         <div class="theme-grid" id="themeGrid"></div>
                     </div>
 
+                    <div class="settings-section">
+                        <h2>🏷️ Tab Customization</h2>
+                        <p style="color: var(--muted); margin-bottom: 20px;">Disguise this tab to look like something else!</p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Tab Name:</label>
+                            <input type="text" id="tabNameInput" class="link-input" placeholder="Game Launcher" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);" onchange="autoSaveTabName()" oninput="autoSaveTabName()">
+                            <p style="color: var(--muted); font-size: 14px; margin-top: 5px;">✓ Auto-saves as you type</p>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Tab Icon URL:</label>
+                            <input type="url" id="tabIconInput" class="link-input" placeholder="https://example.com/icon.png" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);" onchange="autoSaveTabIcon()" oninput="autoSaveTabIcon()">
+                            <p style="color: var(--muted); font-size: 14px; margin-top: 5px;">✓ Auto-saves as you type</p>
+                        </div>
+
+                        <div style="color: var(--muted); font-size: 14px; margin-top: 15px;">
+                            <p><strong>Examples:</strong></p>
+                            <p>• Google Classroom: <code style="background: var(--cardBg); padding: 2px 6px; border-radius: 4px;">https://ssl.gstatic.com/classroom/favicon.png</code></p>
+                            <p>• Google Docs: <code style="background: var(--cardBg); padding: 2px 6px; border-radius: 4px;">https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico</code></p>
+                        </div>
+                    </div>
+
                     <div class="settings-section teacher-link-section">
-                        <h2>🚨 Quick Links</h2>
-                        <p style="color: var(--muted); margin-bottom: 20px;">Need to switch screens fast?</p>
+                        <h2>🚨 Quick Link</h2>
+                        <p style="color: var(--muted); margin-bottom: 20px;">Set a link to open instantly when a teacher is coming!</p>
                         
                         <div style="margin-bottom: 25px;">
                             <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Customize Link URL:</label>
-                            <input type="url" id="teacherLinkInput" class="link-input" placeholder="https://classroom.google.com" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);">
-                            <button onclick="saveTeacherLink()" style="margin-top: 10px; background: linear-gradient(145deg, var(--accentDark), var(--accent)); border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 10px; cursor: pointer; color: #fff; transition: transform 0.2s;">
-                                💾 Save Link
-                            </button>
+                            <input type="url" id="teacherLinkInput" class="link-input" placeholder="https://classroom.google.com" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);" onchange="autoSaveTeacherLink()" oninput="autoSaveTeacherLink()">
+                            <p style="color: var(--muted); font-size: 14px; margin-top: 10px;">✓ Auto-saves as you type</p>
                         </div>
 
-                        <a href="https://classroom.google.com" class="teacher-link" id="teacherLink" target="_blank">
-                            Teacher Coming!
-                        </a>
                         <div class="shortcut-hint">
-                            Press <strong>Ctrl + 1</strong> to open this link instantly
+                            Press <strong>Ctrl + 1</strong> to open this link instantly and hide what you're doing
                         </div>
                     </div>
                 </div>
@@ -1040,15 +1043,17 @@
 
         let currentTheme = localStorage.getItem('selectedTheme') || 'midnight_blossom';
         let teacherLinkUrl = localStorage.getItem('teacherLinkUrl') || 'https://classroom.google.com';
+        let tabName = localStorage.getItem('tabName') || 'Game Launcher';
+        let tabIconUrl = localStorage.getItem('tabIconUrl') || '';
 
         // ---------- Teacher Link Functions ----------
-        function saveTeacherLink() {
+        function autoSaveTeacherLink() {
             const input = document.getElementById('teacherLinkInput');
-            const link = document.getElementById('teacherLink');
             const url = input.value.trim();
 
             if (url === '') {
-                alert('Please enter a valid URL');
+                teacherLinkUrl = 'https://classroom.google.com';
+                localStorage.setItem('teacherLinkUrl', teacherLinkUrl);
                 return;
             }
 
@@ -1060,17 +1065,67 @@
 
             teacherLinkUrl = finalUrl;
             localStorage.setItem('teacherLinkUrl', finalUrl);
-            link.href = finalUrl;
-            
-            alert('Link saved successfully! ✓');
         }
 
         function loadTeacherLink() {
             const input = document.getElementById('teacherLinkInput');
-            const link = document.getElementById('teacherLink');
             
             if (input) input.value = teacherLinkUrl;
-            if (link) link.href = teacherLinkUrl;
+        }
+
+        // ---------- Tab Customization Functions ----------
+        function autoSaveTabName() {
+            const input = document.getElementById('tabNameInput');
+            const name = input.value.trim();
+
+            if (name === '') {
+                tabName = 'Game Launcher';
+            } else {
+                tabName = name;
+            }
+
+            localStorage.setItem('tabName', tabName);
+            applyTabName();
+        }
+
+        function autoSaveTabIcon() {
+            const input = document.getElementById('tabIconInput');
+            const url = input.value.trim();
+
+            tabIconUrl = url;
+            localStorage.setItem('tabIconUrl', tabIconUrl);
+            applyTabIcon();
+        }
+
+        function applyTabName() {
+            document.title = tabName;
+        }
+
+        function applyTabIcon() {
+            // Remove existing favicon
+            const existingFavicon = document.querySelector("link[rel*='icon']");
+            if (existingFavicon) {
+                existingFavicon.remove();
+            }
+
+            if (tabIconUrl && tabIconUrl.trim() !== '') {
+                // Add new favicon
+                const link = document.createElement('link');
+                link.rel = 'icon';
+                link.href = tabIconUrl;
+                document.head.appendChild(link);
+            }
+        }
+
+        function loadTabCustomization() {
+            const nameInput = document.getElementById('tabNameInput');
+            const iconInput = document.getElementById('tabIconInput');
+            
+            if (nameInput) nameInput.value = tabName;
+            if (iconInput) iconInput.value = tabIconUrl;
+
+            applyTabName();
+            applyTabIcon();
         }
 
         // ---------- Theme Functions ----------
@@ -1300,11 +1355,18 @@
         function updateClock() {
             const now = new Date();
             let h = now.getHours();
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
+            const m = now.getMinutes();
             const ampm = h >= 12 ? 'PM' : 'AM';
             h = h % 12 || 12;
-            document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
+            
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const year = now.getFullYear();
+            
+            const timeStr = `${h}:${String(m).padStart(2, '0')} ${ampm}`;
+            const dateStr = `${month}/${day}/${year}`;
+            
+            document.getElementById('clock').innerHTML = `<div>${timeStr}</div><div style="font-size: 12px;">${dateStr}</div>`;
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -1653,6 +1715,9 @@
             
             // Load saved teacher link
             loadTeacherLink();
+
+            // Load saved tab customization
+            loadTabCustomization();
 
             try {
                 await fetchGames();
