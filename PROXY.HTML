@@ -218,165 +218,231 @@
         }
 
         @keyframes spin3d {
-            0% { 
-                transform: rotate(0deg) rotateY(0deg);
-            }
-            50% {
-                transform: rotate(180deg) rotateY(30deg);
-            }
-            100% { 
-                transform: rotate(360deg) rotateY(0deg);
-            }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: rotateY(0deg) rotateX(30deg); }
+            100% { transform: rotateY(360deg) rotateX(30deg); }
         }
 
         .loading-text {
-            font-size: 28px;
-            color: var(--accent);
-            text-shadow: 
-                1px 1px 0px var(--accentDark),
-                0 0 20px var(--accent),
-                0 0 40px var(--glowColor);
-            animation: pulse 1.5s ease-in-out infinite;
+            font-size: 24px;
             font-weight: bold;
-            letter-spacing: 2px;
+            color: var(--text);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px var(--glowColor);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { 
-                opacity: 1; 
-                transform: scale(1) translateZ(0);
-            }
-            50% { 
-                opacity: 0.7; 
-                transform: scale(1.05) translateZ(10px);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
         }
 
-        .game-count {
-            font-size: 48px;
-            color: var(--accent);
-            margin-top: 20px;
-            text-shadow: 
-                0 0 30px var(--accent),
-                0 0 50px var(--glowColor);
-            font-weight: bold;
-            letter-spacing: 3px;
-            transform-style: preserve-3d;
+        #gameCount {
+            font-size: 18px;
+            color: var(--muted);
+            margin-top: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        /* Main Content */
-        #main-content {
+        .content {
             display: none;
             width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            overflow-y: auto;
         }
 
-        .content-section {
-            display: none;
-            width: 100%;
-        }
-
-        .content-section.active {
+        .content.active {
             display: block;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            margin: 40px 0 30px 0;
-            font-size: 48px;
+            margin-bottom: 30px;
             text-align: center;
-            text-shadow: 2px 2px 8px var(--accent), -2px -2px 8px var(--accentDark);
+            font-size: 42px;
+            text-shadow: 0 0 20px var(--glowColor);
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow {
-            from {
-                text-shadow: 2px 2px 8px var(--accent), -2px -2px 8px var(--accentDark);
-            }
-            to {
-                text-shadow: 2px 2px 20px var(--accent), -2px -2px 20px var(--accentDark);
-            }
+            from { text-shadow: 0 0 15px var(--glowColor), 0 0 30px var(--glowColor); }
+            to { text-shadow: 0 0 25px var(--glowColor), 0 0 50px var(--glowColor), 0 0 70px var(--glowColor); }
         }
 
-        /* Search Bar */
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto 30px auto;
-            position: relative;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 15px 20px;
-            font-size: 18px;
-            border: 2px solid var(--accent);
-            border-radius: 30px;
-            background: var(--cardBg);
+        .section-title {
+            font-size: 28px;
+            margin: 30px 0 15px;
+            text-shadow: 0 0 10px var(--glowColor);
             color: var(--text);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeInUp 0.6s ease-out;
         }
 
-        .search-bar:focus {
-            outline: none;
-            box-shadow: 0 0 20px var(--glowColor);
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: var(--cardBg);
+            border: 3px solid var(--accent);
+            border-radius: var(--cardRadius);
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 var(--glowSize) rgba(var(--glowColor), var(--glowStrength));
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 calc(var(--glowSize) * 2) var(--glowColor);
             border-color: var(--glowColor);
         }
 
-        .search-bar::placeholder {
+        .game-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--text);
+            text-shadow: 0 0 10px var(--glowColor);
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-card p {
+            font-size: 14px;
+            color: var(--muted);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Search & Filter */
+        .search-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            color: var(--text);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--glowColor);
+            box-shadow: 0 0 20px var(--glowColor);
+        }
+
+        #searchInput::placeholder {
             color: var(--muted);
         }
 
-        .search-icon {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent);
-            font-size: 20px;
+        #clearSearch {
+            padding: 15px 25px;
+            background: var(--accent);
+            color: var(--text);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        #clearSearch:hover {
+            background: var(--accentDark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--glowColor);
+        }
+
+        #noResults {
+            display: none;
+            text-align: center;
+            font-size: 24px;
+            color: var(--muted);
+            margin-top: 50px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         /* Alphabet Navigation */
         .alphabet-nav {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
             gap: 8px;
-            margin-bottom: 25px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
+            justify-content: center;
+            margin: 20px 0 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 2px solid var(--accent);
         }
 
         .alphabet-letter {
+            padding: 10px 15px;
             background: linear-gradient(145deg, var(--accentDark), var(--accent));
+            color: var(--text);
             border: 2px solid var(--accent);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 16px;
             transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
-        .alphabet-letter:hover, .alphabet-letter.active {
-            transform: scale(1.1);
+        .alphabet-letter:hover {
+            transform: translateY(-5px);
             box-shadow: 0 6px 20px var(--glowColor);
-            border-color: #ffff00;
+            filter: brightness(1.3);
         }
 
         .alphabet-letter.disabled {
-            background: linear-gradient(145deg, #444, #666);
-            border-color: #666;
+            opacity: 0.3;
             cursor: not-allowed;
-            opacity: 0.5;
+            filter: grayscale(100%);
         }
 
         .alphabet-letter.disabled:hover {
@@ -384,549 +450,369 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
-        /* Game Sections */
-        .game-sections {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .game-section {
-            background: var(--cardBg);
-            border-radius: var(--cardRadius);
-            border: 2px solid var(--accent);
+        /* Proxy List */
+        .proxy-item {
             padding: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .section-header {
-            color: var(--accent);
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 0 0 10px var(--accent);
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .game-button {
-            background: linear-gradient(145deg, var(--accentDark), var(--accent));
-            border: none;
-            padding: 20px 40px;
-            font-size: 20px;
-            font-weight: bold;
+            margin-bottom: 15px;
+            background: var(--cardBg);
+            border: 3px solid var(--accent);
             border-radius: var(--cardRadius);
             cursor: pointer;
-            color: #fff;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .game-button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .game-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 10px 30px var(--glowColor);
-        }
-
-        .game-button span {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* No Results Message */
-        .no-results {
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            font-size: 18px;
+            font-weight: bold;
             text-align: center;
-            color: var(--muted);
-            font-size: 24px;
-            margin: 40px 0;
-            padding: 30px;
-            background: rgba(255, 0, 0, 0.1);
-            border-radius: 15px;
-            border: 2px solid var(--accent);
         }
 
-        /* Settings Section */
-        .settings-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
+        .proxy-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px var(--glowColor);
+            border-color: var(--glowColor);
         }
 
+        /* Settings Page */
         .settings-section {
-            background: var(--cardBg);
-            border-radius: var(--cardRadius);
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent);
+            border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
-            border: 2px solid var(--accent);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
         .settings-section h2 {
-            color: var(--accent);
-            margin-bottom: 20px;
             font-size: 28px;
-            text-shadow: 0 0 10px var(--accent);
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--glowColor);
         }
 
         .theme-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
 
-        .theme-option {
-            background: linear-gradient(145deg, var(--accentDark), var(--accent));
-            border: 2px solid var(--accent);
+        .theme-btn {
             padding: 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            font-weight: bold;
-            position: relative;
-        }
-
-        .theme-option:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px var(--glowColor);
-        }
-
-        .theme-option.selected {
-            border-color: #ffff00;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
-        }
-
-        .theme-option.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            font-size: 24px;
-            color: #ffff00;
-        }
-
-        .teacher-link-section {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .teacher-link {
-            display: inline-block;
-            background: linear-gradient(145deg, var(--accentDark), var(--accent));
-            color: white;
-            text-decoration: none;
-            padding: 20px 40px;
-            border-radius: var(--cardRadius);
-            font-size: 24px;
-            font-weight: bold;
-            transition: all 0.3s;
-            border: 2px solid var(--accent);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .teacher-link:hover {
-            transform: scale(1.1);
-            box-shadow: 0 10px 30px var(--glowColor);
-        }
-
-        .shortcut-hint {
-            margin-top: 15px;
-            color: var(--muted);
-            font-size: 16px;
-        }
-
-        /* Bug Report Form Button Hover */
-        #bugReportForm button[type="submit"]:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px var(--glowColor);
-        }
-
-        /* Proxy Content */
-        .proxy-message {
-            text-align: center;
-            font-size: 24px;
-            color: var(--accent);
-            margin-top: 50px;
-            text-shadow: 0 0 10px var(--accent);
-        }
-
-        .proxy-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 800px;
-            margin: 40px auto;
-        }
-
-        .proxy-item {
-            background: linear-gradient(145deg, var(--accentDark), var(--accent));
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
-        }
-
-        .proxy-item a {
-            color: white;
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .proxy-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px var(--glowColor);
-        }
-
-        /* Key Input Modal */
-        .key-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-
-        .key-modal.show {
-            display: flex;
-        }
-
-        .key-modal-content {
-            background: linear-gradient(145deg, var(--bg), var(--header));
-            padding: 40px;
-            border-radius: 20px;
             border: 3px solid var(--accent);
-            box-shadow: 0 0 50px var(--glowColor);
-            text-align: center;
-        }
-
-        .key-modal-content h2 {
-            color: var(--accent);
-            margin-bottom: 20px;
-            font-size: 32px;
-            text-shadow: 0 0 10px var(--accent);
-        }
-
-        .key-input {
-            padding: 15px;
-            font-size: 20px;
-            border: 2px solid var(--accent);
-            border-radius: 10px;
-            background: #000;
-            color: #fff;
-            width: 300px;
-            margin-bottom: 20px;
-        }
-
-        .key-submit {
-            background: linear-gradient(145deg, var(--accentDark), var(--accent));
-            border: none;
-            padding: 15px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 10px;
+            border-radius: 12px;
+            background: var(--cardBg);
+            color: var(--text);
             cursor: pointer;
-            color: #fff;
-            margin-right: 10px;
-        }
-
-        .key-cancel {
-            background: linear-gradient(145deg, #666, #999);
-            border: none;
-            padding: 15px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            color: #fff;
-        }
-
-        .key-error {
-            color: var(--accent);
-            margin-top: 10px;
+            transition: all 0.3s;
             font-size: 16px;
-        }
-
-        /* Game Loading Overlay */
-        #game-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: #fff;
-            z-index: 1500;
-        }
-
-        .spinner {
-            border: 8px solid var(--bg);
-            border-top: 8px solid var(--accent);
-            border-right: 8px solid var(--accentDark);
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        .bible-verse {
-            max-width: 600px;
+            font-weight: bold;
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255, 0, 0, 0.1);
-            border-radius: 15px;
-            border: 2px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
-        .verse-text {
-            font-size: 18px;
-            color: #fff;
-            font-style: italic;
+        .theme-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--glowColor);
+        }
+
+        .theme-btn.active {
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
+        }
+
+        .teacher-section {
+            margin-top: 20px;
+        }
+
+        .teacher-section label {
+            display: block;
             margin-bottom: 10px;
-            line-height: 1.6;
+            font-size: 18px;
+            color: var(--text);
         }
 
-        .verse-reference {
+        .teacher-section input {
+            width: 100%;
+            padding: 15px;
             font-size: 16px;
-            color: var(--glowColor);
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        .teacher-section input:focus {
+            outline: none;
+            border-color: var(--glowColor);
+            box-shadow: 0 0 15px var(--glowColor);
+        }
+
+        .teacher-section button {
+            padding: 15px 30px;
+            background: var(--accent);
+            color: var(--text);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
             font-weight: bold;
-            text-shadow: 0 0 5px var(--glowColor);
+            transition: all 0.3s;
+        }
+
+        .teacher-section button:hover {
+            background: var(--accentDark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--glowColor);
+        }
+
+        .tab-section {
+            margin-top: 20px;
+        }
+
+        .tab-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .tab-section input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        .tab-section input:focus {
+            outline: none;
+            border-color: var(--glowColor);
+            box-shadow: 0 0 15px var(--glowColor);
+        }
+
+        .tab-section button {
+            padding: 15px 30px;
+            background: var(--accent);
+            color: var(--text);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-section button:hover {
+            background: var(--accentDark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--glowColor);
         }
 
         /* Game Container */
         #game-container {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: none;
+            background: #000;
+            z-index: 1500;
             flex-direction: column;
-            z-index: 1000;
-            padding: 20px;
         }
 
-        #game-container:fullscreen {
-            padding: 0;
-        }
-
-        #game-container:-webkit-full-screen {
-            padding: 0;
-        }
-
-        #game-container:-moz-full-screen {
-            padding: 0;
-        }
-
-        #game-container:-ms-fullscreen {
-            padding: 0;
-        }
-
-        .game-header {
+        #game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 10px 20px;
-            background: var(--cardBg);
-            border-radius: 10px;
+            padding: 15px 20px;
+            background: var(--header);
+            border-bottom: 3px solid var(--accent);
         }
 
-        #game-container:fullscreen .game-header {
-            border-radius: 0;
-            margin-bottom: 0;
-        }
-
-        .game-title {
+        #currentGameTitle {
             font-size: 24px;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
+            font-weight: bold;
+            color: var(--text);
+            text-shadow: 0 0 10px var(--glowColor);
         }
 
-        .header-buttons {
+        #game-controls {
             display: flex;
             gap: 10px;
         }
 
-        .control-btn {
-            background: linear-gradient(145deg, var(--accent), var(--accentDark));
-            border: none;
-            padding: 10px 25px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
+        #game-controls button {
+            padding: 12px 20px;
+            background: var(--accent);
+            color: var(--text);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
             cursor: pointer;
-            color: #fff;
-            transition: transform 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
         }
 
-        .control-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px var(--glowColor);
+        #game-controls button:hover {
+            background: var(--accentDark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--glowColor);
         }
 
         #game-frame {
             width: 100%;
-            flex: 1;
-            border: 3px solid var(--accent);
+            height: calc(100% - 70px);
+            border: none;
+            background: #fff;
+        }
+
+        /* Game Loader with Bible Verses */
+        #game-loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg), #000000);
+            z-index: 1600;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-spinner {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 40px;
+        }
+
+        .loader-spinner::before,
+        .loader-spinner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid transparent;
+        }
+
+        .loader-spinner::before {
+            border-top-color: var(--accent);
+            border-right-color: var(--accentDark);
+            animation: spin3d 1.5s linear infinite;
+            box-shadow: 0 0 40px var(--accent), inset 0 0 25px var(--glowColor);
+        }
+
+        .loader-spinner::after {
+            border-bottom-color: var(--glowColor);
+            border-left-color: var(--accentDark);
+            animation: spin3d 2s linear infinite reverse;
+            box-shadow: 0 0 30px var(--accentDark);
+        }
+
+        .verse-container {
+            max-width: 700px;
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent);
             border-radius: 15px;
-            background: #000;
             box-shadow: 0 0 30px var(--glowColor);
         }
 
-        #game-container:fullscreen #game-frame {
-            border-radius: 0;
-            border: none;
-        }
-
-        /* Fullscreen hint */
-        .fullscreen-hint {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            z-index: 2000;
-            display: none;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        .fullscreen-hint.show {
-            display: block;
-        }
-
-        /* Clock & Battery Widget - Now at Bottom */
-        #statusBar {
-            position: fixed;
-            bottom: 10px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 5000;
-        }
-
-        #clock {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 8px 15px;
-            background: var(--cardBg);
-            border-radius: 20px;
-            border: 2px solid var(--accent);
-            font-size: 16px;
-            color: var(--accent);
-            font-weight: bold;
-            text-shadow: 0 0 10px var(--accent);
-            line-height: 1.2;
-        }
-
-        #batteryWidget {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
-            background: var(--cardBg);
-            border-radius: 20px;
-            border: 2px solid var(--accent);
-            font-size: 20px;
-            color: var(--accent);
-            font-weight: bold;
-            text-shadow: 0 0 10px var(--accent);
-        }
-
-        #batteryWidget i {
+        #verseText {
             font-size: 22px;
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 15px;
+            line-height: 1.6;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        #batteryChargingIcon {
-            color: #00ff00;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        /* Device Info Widget - Now at Bottom Left */
-        #deviceInfo {
-            position: fixed;
-            bottom: 10px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            z-index: 5000;
-            padding: 10px 20px;
-            background: var(--cardBg);
-            border-radius: 15px;
-            border: 2px solid var(--accent);
-        }
-
-        .device-name {
-            font-size: 16px;
-            color: var(--accent);
-            font-weight: bold;
-            text-shadow: 0 0 8px var(--accent);
-        }
-
-        .managed-by {
-            font-size: 13px;
+        #verseReference {
+            font-size: 18px;
             color: var(--muted);
-            font-weight: normal;
-            text-shadow: 0 0 5px var(--glowColor);
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
         }
 
-        .device-icon {
-            display: inline-block;
-            margin-right: 8px;
+        /* Fullscreen Hint */
+        #fullscreenHint {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--text);
+            padding: 30px 50px;
+            border-radius: 15px;
+            border: 3px solid var(--accent);
+            font-size: 20px;
+            text-align: center;
+            box-shadow: 0 0 50px var(--glowColor);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            z-index: 2000;
         }
 
-        /* Responsive Design */
+        #fullscreenHint.show {
+            opacity: 1;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background: linear-gradient(0deg, var(--header), var(--bg));
+            border-top: 3px solid var(--accent);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .bottom-bar-content {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text);
+            text-shadow: 0 0 10px var(--glowColor);
+            text-align: center;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-left: 2px solid var(--accent);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 6px;
+            box-shadow: 0 0 10px var(--glowColor);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--glowColor);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 flex-wrap: wrap;
@@ -939,1056 +825,640 @@
                 font-size: 14px;
             }
 
-            .main-wrapper {
-                margin-top: 120px;
-                padding: 10px;
-            }
-
             h1 {
-                font-size: 28px;
+                font-size: 32px;
             }
 
-            .tooltip {
-                font-size: 11px;
+            .section-title {
+                font-size: 22px;
             }
 
-            #statusBar {
-                flex-direction: column;
-                gap: 10px;
-                font-size: 16px;
-                bottom: 10px;
-                right: 10px;
-            }
-
-            #deviceInfo {
-                bottom: 10px;
-                left: 10px;
-                padding: 8px 12px;
-            }
-
-            .device-name {
-                font-size: 14px;
-            }
-
-            .managed-by {
-                font-size: 11px;
-            }
-
-            .theme-grid {
-                grid-template-columns: 1fr;
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
             }
 
             .alphabet-nav {
                 gap: 5px;
+                padding: 15px;
             }
 
             .alphabet-letter {
-                width: 35px;
-                height: 35px;
+                padding: 8px 12px;
                 font-size: 14px;
             }
+        }
 
-            .game-button {
-                padding: 15px 25px;
-                font-size: 16px;
-            }
+        /* Locked Content Overlay */
+        .locked-overlay {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .locked-overlay h2 {
+            font-size: 36px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .locked-overlay p {
+            font-size: 18px;
+            color: var(--muted);
         }
     </style>
 </head>
 <body>
-
-    <!-- Snow Canvas -->
     <canvas id="snowCanvas"></canvas>
 
-    <!-- Sidebar -->
+    <!-- Horizontal Top Menu -->
     <div class="sidebar">
-        <div class="sidebar-item active" onclick="switchSection('games')">
-            Games
-            <div class="tooltip">Games are games</div>
+        <div class="sidebar-item active" id="gamesItem" onclick="switchTab('games')">
+            🎮 Games
+            <span class="tooltip">Browse all available games</span>
         </div>
-        <div class="sidebar-item locked" id="proxysItem" onclick="checkProxyAccess()">
-            Proxys <span class="lock-icon">🔒</span>
-            <div class="tooltip">Proxys are websites that have browsers built in them</div>
+        <div class="sidebar-item locked" id="proxysItem" onclick="switchTab('proxys')">
+            🌐 Proxys <span class="lock-icon">🔒</span>
+            <span class="tooltip">Unlock by typing 'unlockproxy' in search</span>
         </div>
-        <div class="sidebar-item locked" id="testingItem" onclick="checkTestingAccess()">
-            Testing <span class="lock-icon-testing">🔒</span>
-            <div class="tooltip">Report broken games</div>
+        <div class="sidebar-item locked" id="testingItem" onclick="switchTab('testing')">
+            🧪 Testing <span class="lock-icon">🔒</span>
+            <span class="tooltip">Unlock by typing 'unlocktesting' in search</span>
         </div>
-        <div class="sidebar-item" onclick="switchSection('settings')">
-            Settings
-            <div class="tooltip">Customize your experience</div>
+        <div class="sidebar-item" id="settingsItem" onclick="switchTab('settings')">
+            ⚙️ Settings
+            <span class="tooltip">Customize your experience</span>
+        </div>
+        <div class="sidebar-item" id="helpItem" onclick="switchTab('help')">
+            ❓ Help
+            <span class="tooltip">Learn how to use the launcher</span>
         </div>
     </div>
 
-    <!-- Main Wrapper -->
-    <div class="main-wrapper">
-        <!-- Initial Loading Screen -->
-        <div id="initial-loader">
-            <div class="initial-spinner"></div>
-            <div class="loading-text">Loading games also use this wisely</div>
-            <div class="game-count" id="gameCount"></div>
+    <!-- Initial Loading Screen -->
+    <div id="initial-loader">
+        <div class="initial-spinner"></div>
+        <div class="loading-text">Loading Game Launcher...</div>
+        <div id="gameCount">Connecting to repository...</div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content" class="main-wrapper">
+        <!-- Games Tab -->
+        <div id="games" class="content active">
+            <h1>🎮 Game Library</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search for games..." oninput="filterGames()">
+                <button id="clearSearch" onclick="clearSearch()">Clear</button>
+            </div>
+            <div class="alphabet-nav" id="alphabetNav"></div>
+            <div id="game-sections"></div>
+            <div id="noResults">No games found matching your search.</div>
         </div>
 
-        <!-- Main Content -->
-        <div id="main-content">
-            <!-- Games Section -->
-            <div class="content-section active" id="gamesSection">
-                <h1>There are games and more but look though setting first before doing anything</h1>
-                
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <input type="text" class="search-bar" id="gameSearch" placeholder="Search for games..." oninput="filterGames()">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
-                
-                <!-- Alphabet Navigation -->
-                <div class="alphabet-nav" id="alphabetNav"></div>
-                
-                <!-- Game Sections -->
-                <div class="game-sections" id="gameSections"></div>
-                
-                <!-- No Results Message -->
-                <div class="no-results" id="noResults" style="display: none;">
-                    No games found matching your search.
-                </div>
+        <!-- Proxys Tab -->
+        <div id="proxys" class="content">
+            <h1>🌐 Proxys</h1>
+            <div id="proxyList"></div>
+        </div>
+
+        <!-- Testing Tab -->
+        <div id="testing" class="content">
+            <div class="locked-overlay">
+                <h2>🧪 Testing Area</h2>
+                <p>This section is for experimental features and bug testing.</p>
+                <p style="margin-top:15px;">Currently under development.</p>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="content">
+            <h1>⚙️ Settings</h1>
+            
+            <div class="settings-section">
+                <h2>🎨 Theme Selection</h2>
+                <div class="theme-grid" id="themeGrid"></div>
             </div>
 
-            <!-- Proxys Section -->
-            <div class="content-section" id="proxysSection">
-                <h1>Proxy Zone</h1>
-                <div class="proxy-message">Welcome to the Proxy Zone! 🌐</div>
-                <div class="proxy-list" id="proxyList"></div>
-            </div>
-
-            <!-- Settings Section -->
-            <div class="content-section" id="settingsSection">
-                <h1>Settings</h1>
-                <div class="settings-container">
-                    <div class="settings-section">
-                        <h2>🎨 Theme Selection</h2>
-                        <p style="color: var(--muted); margin-bottom: 15px;">Choose your favorite theme to customize the launcher's appearance:</p>
-                        <div class="theme-grid" id="themeGrid"></div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2>🏷️ Tab Customization</h2>
-                        <p style="color: var(--muted); margin-bottom: 20px;">Disguise this tab to look like something else!</p>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Tab Name:</label>
-                            <input type="text" id="tabNameInput" class="link-input" placeholder="Game Launcher" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);" onchange="autoSaveTabName()" oninput="autoSaveTabName()">
-                            <p style="color: var(--muted); font-size: 14px; margin-top: 5px;">✓ Auto-saves as you type</p>
-                        </div>
-
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Tab Icon URL:</label>
-                            <input type="url" id="tabIconInput" class="link-input" placeholder="https://example.com/icon.png" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);" onchange="autoSaveTabIcon()" oninput="autoSaveTabIcon()">
-                            <p style="color: var(--muted); font-size: 14px; margin-top: 5px;">✓ Auto-saves as you type</p>
-                        </div>
-
-                        <div style="color: var(--muted); font-size: 14px; margin-top: 15px;">
-                            <p><strong>Examples:</strong></p>
-                            <p>• Google Classroom: <code style="background: var(--cardBg); padding: 2px 6px; border-radius: 4px;">https://ssl.gstatic.com/classroom/favicon.png</code></p>
-                            <p>• Google Docs: <code style="background: var(--cardBg); padding: 2px 6px; border-radius: 4px;">https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico</code></p>
-                        </div>
-                    </div>
-
-                    <div class="settings-section teacher-link-section">
-                        <h2>🚨 Quick Link</h2>
-                        <p style="color: var(--muted); margin-bottom: 20px;">Set a link to open instantly when a teacher is coming!</p>
-                        
-                        <div style="margin-bottom: 25px;">
-                            <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Customize Link URL:</label>
-                            <input type="url" id="teacherLinkInput" class="link-input" placeholder="https://classroom.google.com" style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);" onchange="autoSaveTeacherLink()" oninput="autoSaveTeacherLink()">
-                            <p style="color: var(--muted); font-size: 14px; margin-top: 10px;">✓ Auto-saves as you type</p>
-                        </div>
-
-                        <div class="shortcut-hint">
-                            Press <strong>Ctrl + 1</strong> to open this link instantly and hide what you're doing
-                        </div>
-                    </div>
+            <div class="settings-section">
+                <h2>🔗 Teacher Link</h2>
+                <div class="teacher-section">
+                    <label for="teacherLinkInput">Enter a URL to quickly switch to when a teacher approaches:</label>
+                    <input type="text" id="teacherLinkInput" placeholder="https://example.com">
+                    <button onclick="saveTeacherLink()">Save Teacher Link</button>
+                    <p id="teacherLinkStatus" style="margin-top:10px;color:var(--muted);"></p>
                 </div>
             </div>
 
-            <!-- Testing Section -->
-            <div class="content-section" id="testingSection">
-                <h1>Game Testing & Bug Reports</h1>
-                <div class="settings-container">
-                    <div class="settings-section">
-                        <h2>🐛 Report a Broken Game</h2>
-                        <p style="color: var(--muted); margin-bottom: 20px;">Help us fix broken games by reporting them here!</p>
-                        
-                        <form id="bugReportForm" onsubmit="submitBugReport(event)" style="max-width: 600px;">
-                            <div style="margin-bottom: 20px;">
-                                <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Your Name:</label>
-                                <input type="text" id="reporterName" required placeholder="Enter your name" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);">
-                            </div>
-
-                            <div style="margin-bottom: 20px;">
-                                <label style="display: block; margin-bottom: 10px; color: var(--text); font-weight: bold;">Game Name (that doesn't work):</label>
-                                <input type="text" id="brokenGame" required placeholder="Enter the game name" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--accent); border-radius: 10px; background: var(--cardBg); color: var(--text);">
-                            </div>
-
-                            <button type="submit" style="background: linear-gradient(145deg, var(--accentDark), var(--accent)); border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 10px; cursor: pointer; color: #fff; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
-                                📤 Submit Report
-                            </button>
-                        </form>
-
-                        <div id="reportStatus" style="margin-top: 20px; padding: 15px; border-radius: 10px; display: none;"></div>
-                    </div>
+            <div class="settings-section">
+                <h2>📑 Tab Customization</h2>
+                <div class="tab-section">
+                    <label for="tabTitleInput">Custom Tab Title:</label>
+                    <input type="text" id="tabTitleInput" placeholder="e.g., Google Docs">
+                    <label for="tabIconInput">Custom Tab Icon URL:</label>
+                    <input type="text" id="tabIconInput" placeholder="e.g., https://www.google.com/favicon.ico">
+                    <button onclick="saveTabCustomization()">Save Tab Settings</button>
+                    <p id="tabCustomStatus" style="margin-top:10px;color:var(--muted);"></p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Device Info Widget -->
-    <div id="deviceInfo">
-        <div class="device-name">
-            <span class="device-icon"><i class="fa-solid fa-laptop"></i></span>
-            <span id="deviceName">Loading...</span>
-        </div>
-        <div class="managed-by" id="managedBy">Detecting management...</div>
-    </div>
-
-    <!-- Status Bar (Clock & Battery) -->
-    <div id="statusBar">
-        <div id="clock"></div>
-        <div id="batteryWidget">
-            <i id="batteryIcon" class="fa-solid fa-battery-full"></i>
-            <span id="batteryLevel">100%</span>
-            <i id="batteryChargingIcon" class="fa-solid fa-bolt" style="display: none;"></i>
-        </div>
-    </div>
-
-    <!-- Key Input Modal -->
-    <div class="key-modal" id="keyModal">
-        <div class="key-modal-content">
-            <h2>Enter Access Key</h2>
-            <input type="text" class="key-input" id="keyInput" placeholder="Enter key...">
-            <div class="key-error" id="keyError"></div>
-            <div>
-                <button class="key-submit" onclick="submitKey()">Submit</button>
-                <button class="key-cancel" onclick="closeKeyModal()">Cancel</button>
+        <!-- Help Tab -->
+        <div id="help" class="content">
+            <h1>❓ Help & Information</h1>
+            <div class="settings-section">
+                <h2>How to Use This Launcher</h2>
+                <p style="line-height:1.8;font-size:16px;">
+                    Welcome to the Game Launcher! Here's how to get started:
+                    <br><br>
+                    <strong>🎮 Playing Games:</strong> Click on any game card to load it. Use the controls at the top of the game window to reload, go fullscreen, or close the game.
+                    <br><br>
+                    <strong>🔍 Searching:</strong> Use the search bar to quickly find games by name. Type to filter, and click "Clear" to reset.
+                    <br><br>
+                    <strong>🔤 Alphabet Navigation:</strong> Click on any letter to jump to games starting with that letter.
+                    <br><br>
+                    <strong>🌐 Proxys:</strong> Type 'unlockproxy' in the search bar to unlock the proxy section.
+                    <br><br>
+                    <strong>🧪 Testing:</strong> Type 'unlocktesting' in the search bar to unlock experimental features.
+                    <br><br>
+                    <strong>🎨 Themes:</strong> Visit the Settings tab to change the color theme of the launcher.
+                    <br><br>
+                    <strong>🔗 Teacher Link:</strong> Set a safe URL in Settings that you can quickly switch to if a teacher approaches.
+                    <br><br>
+                    <strong>⌨️ Keyboard Shortcuts:</strong>
+                    <br>• Press <code>T</code> to quickly switch to your teacher link
+                    <br>• Press <code>F</code> in a game to toggle fullscreen
+                    <br>• Press <code>ESC</code> to close the current game
+                </p>
+            </div>
+            <div class="settings-section">
+                <h2>Credits & Information</h2>
+                <p style="line-height:1.8;font-size:16px;">
+                    This launcher was created to provide easy access to HTML5 games.
+                    <br><br>
+                    <strong>Features:</strong>
+                    <br>• Automatic game loading from GitHub
+                    <br>• Multiple proxy support
+                    <br>• Customizable themes
+                    <br>• Teacher panic button
+                    <br>• Search and filter
+                    <br>• Fullscreen support
+                    <br><br>
+                    Enjoy responsibly and always follow your school's technology policies!
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Game Loading Overlay -->
-    <div id="game-loader">
-        <div class="spinner"></div>
-        <div class="loading-text">Loading game...</div>
-        <div class="bible-verse" id="bibleVerse">
-            <div class="verse-text" id="verseText"></div>
-            <div class="verse-reference" id="verseReference"></div>
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <div class="bottom-bar-content">
+            🎮 Game Launcher v2.0 | Use responsibly during free time
         </div>
     </div>
 
     <!-- Game Container -->
     <div id="game-container">
-        <div class="game-header">
-            <div class="game-title" id="currentGameTitle">Game</div>
-            <div class="header-buttons">
-                <button class="control-btn" id="fullscreenBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
-                <button class="control-btn" onclick="reloadGame()">🔄 Reload</button>
-                <button class="control-btn" onclick="closeGame()">✖ Close</button>
+        <div id="game-header">
+            <div id="currentGameTitle">Game Title</div>
+            <div id="game-controls">
+                <button onclick="reloadGame()">🔄 Reload</button>
+                <button id="fullscreenBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                <button onclick="closeGame()">✖ Close</button>
             </div>
         </div>
         <iframe id="game-frame"></iframe>
     </div>
 
-    <!-- Fullscreen hint -->
-    <div class="fullscreen-hint" id="fullscreenHint">Press ESC to exit fullscreen</div>
+    <!-- Game Loader with Bible Verse -->
+    <div id="game-loader">
+        <div class="loader-spinner"></div>
+        <div class="verse-container">
+            <div id="verseText">"For I know the plans I have for you..."</div>
+            <div id="verseReference">- Jeremiah 29:11</div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Hint -->
+    <div id="fullscreenHint">
+        Press <strong>ESC</strong> to exit fullscreen
+    </div>
 
     <script>
-        // ---------- Theme Data ----------
+        // Configuration
+        const GITHUB_USER = 'monke6942021';
+        const GITHUB_REPO = 'game-and-cheats';
+        const GITHUB_BRANCH = 'main';
+
+        // State
+        let games = [];
+        let proxies = [];
+        let currentGame = { filename: '', title: '' };
+        let currentTheme = localStorage.getItem('theme') || 'red';
+        let proxyUnlocked = localStorage.getItem('proxyUnlocked') === 'true';
+        let testingUnlocked = localStorage.getItem('testingUnlocked') === 'true';
+
+        // Bible verses
+        const verses = [
+            { text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11" },
+            { text: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13" },
+            { text: "Trust in the Lord with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5" },
+            { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9" },
+            { text: "The Lord is my shepherd, I lack nothing.", ref: "Psalm 23:1" },
+            { text: "And we know that in all things God works for the good of those who love him.", ref: "Romans 8:28" },
+            { text: "Cast all your anxiety on him because he cares for you.", ref: "1 Peter 5:7" },
+            { text: "For God so loved the world that he gave his one and only Son.", ref: "John 3:16" },
+            { text: "The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.", ref: "Numbers 6:24-25" },
+            { text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.", ref: "Philippians 4:6" }
+        ];
+
+        function getRandomVerse() {
+            return verses[Math.floor(Math.random() * verses.length)];
+        }
+
+        // Theme definitions
         const themes = {
-            "midnight_blossom": {"bg":"#1a1023","header":"#2a1738","text":"#f8eaff","muted":"#d7c6e6","accent":"#ff7bda","accentDark":"#b30088","glowColor":"#ffb3ef","cardBg":"#261332","cardRadius":12,"glowSize":28,"glowStrength":0.55,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffcdf5","snowCount":130,"snowSize":3,"snowSpeed":1.4},
-            "emerald_peak": {"bg":"#051914","header":"#0b2c22","text":"#dcfff5","muted":"#b9e6d2","accent":"#4cffc1","accentDark":"#158f6b","glowColor":"#77ffd9","cardBg":"#0f3b2c","cardRadius":14,"glowSize":22,"glowStrength":0.4,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#a8ffe5","snowCount":110,"snowSize":3,"snowSpeed":1.2},
-            "solar_flare": {"bg":"#2a0b00","header":"#4d1300","text":"#ffe6d4","muted":"#ffc4a1","accent":"#ff5e00","accentDark":"#a63500","glowColor":"#ff9e66","cardBg":"#3b0f00","cardRadius":10,"glowSize":33,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ff7033","snowCount":85,"snowSize":4,"snowSpeed":1.7},
-            "frostbyte": {"bg":"#02131e","header":"#062738","text":"#ddf7ff","muted":"#b8e5f2","accent":"#52d7ff","accentDark":"#1e7da3","glowColor":"#b8f5ff","cardBg":"#0a2c40","cardRadius":18,"glowSize":25,"glowStrength":0.52,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#cff7ff","snowCount":200,"snowSize":2,"snowSpeed":1.1},
-            "bubblegum_dream": {"bg":"#ffdef2","header":"#ffd1ee","text":"#5e004a","muted":"#8a006b","accent":"#ff77cf","accentDark":"#d1008d","glowColor":"#ffb0e8","cardBg":"#ffd8ef","cardRadius":20,"glowSize":20,"glowStrength":0.4,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ff87d9","snowCount":50,"snowSize":5,"snowSpeed":0.8},
-            "radioactive_neon": {"bg":"#031301","header":"#062705","text":"#dfffda","muted":"#b9e6bc","accent":"#39ff14","accentDark":"#1faf08","glowColor":"#7dff67","cardBg":"#0b3d09","cardRadius":10,"glowSize":40,"glowStrength":0.9,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#7fff52","snowCount":150,"snowSize":3,"snowSpeed":1.6},
-            "sunset_sorbet": {"bg":"#3b0f1c","header":"#5c1830","text":"#ffeef5","muted":"#ffbfd5","accent":"#ff668f","accentDark":"#b33252","glowColor":"#ff9cb5","cardBg":"#471427","cardRadius":15,"glowSize":30,"glowStrength":0.5,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffb6ce","snowCount":120,"snowSize":3,"snowSpeed":1.3},
-            "cafe_mocha": {"bg":"#2a1a10","header":"#3b2415","text":"#ffe8d8","muted":"#d9c3b5","accent":"#b87445","accentDark":"#7c4c2d","glowColor":"#d8a986","cardBg":"#351f13","cardRadius":12,"glowSize":18,"glowStrength":0.38,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#c59c7a","snowCount":60,"snowSize":4,"snowSpeed":0.9},
-            "aqua_wave": {"bg":"#001a26","header":"#003344","text":"#dcf8ff","muted":"#b9e6f2","accent":"#3ddcff","accentDark":"#117d99","glowColor":"#8af0ff","cardBg":"#002a38","cardRadius":16,"glowSize":26,"glowStrength":0.58,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#a8f6ff","snowCount":140,"snowSize":3,"snowSpeed":1.4},
-            "moonlight_silver": {"bg":"#0f0f14","header":"#1a1a22","text":"#f2f2f6","muted":"#bcbcc6","accent":"#9ea4ff","accentDark":"#5056c8","glowColor":"#c4c7ff","cardBg":"#16161d","cardRadius":12,"glowSize":28,"glowStrength":0.5,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#d3d6ff","snowCount":120,"snowSize":3,"snowSpeed":1.2},
-            "jungle_mist": {"bg":"#0b1f12","header":"#153423","text":"#e8ffe8","muted":"#cceccc","accent":"#66ff8c","accentDark":"#27994a","glowColor":"#99ffc0","cardBg":"#102a1a","cardRadius":14,"glowSize":22,"glowStrength":0.43,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#b6ffd2","snowCount":90,"snowSize":3,"snowSpeed":1.3},
-            "ocean_dusk": {"bg":"#001224","header":"#002544","text":"#dff2ff","muted":"#b8d7e6","accent":"#6cb8ff","accentDark":"#2c6ba3","glowColor":"#a3d7ff","cardBg":"#001d33","cardRadius":18,"glowSize":24,"glowStrength":0.45,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#bcdfff","snowCount":160,"snowSize":2,"snowSpeed":1.1},
-            "pink_frost": {"bg":"#2b0d1f","header":"#471634","text":"#ffdff5","muted":"#f1b9d8","accent":"#ff7ec4","accentDark":"#b24284","glowColor":"#ffb2dc","cardBg":"#3b122a","cardRadius":16,"glowSize":34,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffc2e6","snowCount":150,"snowSize":3,"snowSpeed":1.5},
-            "techno_grid": {"bg":"#0a0a0f","header":"#15151f","text":"#e3e9ff","muted":"#b7c0e6","accent":"#40bbff","accentDark":"#1778a3","glowColor":"#89d8ff","cardBg":"#12121a","cardRadius":12,"glowSize":36,"glowStrength":0.75,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#66ccff","snowCount":180,"snowSize":3,"snowSpeed":1.6},
-            "sunny_field": {"bg":"#fff8d9","header":"#ffeeb3","text":"#663e00","muted":"#8c5c1a","accent":"#ffcc33","accentDark":"#c78a00","glowColor":"#ffe57a","cardBg":"#fff1bf","cardRadius":20,"glowSize":20,"glowStrength":0.35,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffe28a","snowCount":50,"snowSize":4,"snowSpeed":0.9},
-            "mint_leaf": {"bg":"#e6fff4","header":"#c6ffe6","text":"#004d33","muted":"#267359","accent":"#33ffb8","accentDark":"#0fa36e","glowColor":"#8cffd7","cardBg":"#d2ffe8","cardRadius":18,"glowSize":18,"glowStrength":0.32,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#a0ffe6","snowCount":40,"snowSize":5,"snowSpeed":0.7},
-            "void_shadow": {"bg":"#000000","header":"#0a0a0a","text":"#e6e6e6","muted":"#999999","accent":"#5a5a5a","accentDark":"#2a2a2a","glowColor":"#bbbbbb","cardBg":"#080808","cardRadius":10,"glowSize":40,"glowStrength":0.8,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#cccccc","snowCount":200,"snowSize":2,"snowSpeed":1.2},
-            "ruby_crystal": {"bg":"#290001","header":"#400002","text":"#ffe5e8","muted":"#ffb3bb","accent":"#ff3355","accentDark":"#a30024","glowColor":"#ff8899","cardBg":"#320002","cardRadius":14,"glowSize":32,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ff99aa","snowCount":130,"snowSize":3,"snowSpeed":1.6},
-            "arctic_bloom": {"bg":"#f2fcff","header":"#dff8ff","text":"#004f63","muted":"#1b6e84","accent":"#53dfff","accentDark":"#0c8ba3","glowColor":"#9eeeff","cardBg":"#e7f9ff","cardRadius":18,"glowSize":18,"glowStrength":0.3,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#bbf2ff","snowCount":60,"snowSize":4,"snowSpeed":0.9},
-            "honey_glow": {"bg":"#2a1900","header":"#412600","text":"#ffefcc","muted":"#ddc7a1","accent":"#ffb300","accentDark":"#a67300","glowColor":"#ffd677","cardBg":"#352000","cardRadius":12,"glowSize":26,"glowStrength":0.46,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffcf87","snowCount":100,"snowSize":3,"snowSpeed":1.2},
-            "acid_punch": {"bg":"#12001a","header":"#260033","text":"#ffe6ff","muted":"#d9b3e6","accent":"#ff00cc","accentDark":"#99007a","glowColor":"#ff80dd","cardBg":"#1c0026","cardRadius":16,"glowSize":38,"glowStrength":0.72,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffaae8","snowCount":150,"snowSize":3,"snowSpeed":1.5},
-            "arctic_night": {"bg":"#06080f","header":"#0b1120","text":"#dde6ff","muted":"#a7b4d9","accent":"#5577ff","accentDark":"#2a3c99","glowColor":"#9bb5ff","cardBg":"#090d14","cardRadius":10,"glowSize":27,"glowStrength":0.55,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#c3d2ff","snowCount":170,"snowSize":3,"snowSpeed":1.4},
-            "rainforest_dew": {"bg":"#0d1f17","header":"#123026","text":"#e0fff3","muted":"#bee6d8","accent":"#4cffac","accentDark":"#1d8f64","glowColor":"#92ffd3","cardBg":"#102a20","cardRadius":14,"glowSize":24,"glowStrength":0.42,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#b6ffe1","snowCount":100,"snowSize":3,"snowSpeed":1.2},
-            "candy_arcade": {"bg":"#230011","header":"#3b001b","text":"#ffebf3","muted":"#ffc4db","accent":"#ff4fa4","accentDark":"#a30062","glowColor":"#ff9bcf","cardBg":"#310016","cardRadius":18,"glowSize":36,"glowStrength":0.7,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#ffb4da","snowCount":140,"snowSize":3,"snowSpeed":1.5},
-            "obsidian_gold": {"bg":"#0a0905","header":"#1a180f","text":"#f7e7bf","muted":"#d4c193","accent":"#e6b400","accentDark":"#9c7d00","glowColor":"#ffe680","cardBg":"#12110a","cardRadius":12,"glowSize":28,"glowStrength":0.55,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#f5d97c","snowCount":100,"snowSize":3,"snowSpeed":1.3},
-            "glacial_berry": {"bg":"#1e0033","header":"#32004f","text":"#f4e6ff","muted":"#d4b3f7","accent":"#bf59ff","accentDark":"#7826a6","glowColor":"#d9a3ff","cardBg":"#290041","cardRadius":15,"glowSize":33,"glowStrength":0.6,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#e7c3ff","snowCount":145,"snowSize":3,"snowSpeed":1.5},
-            "lavender_fade": {"bg":"#f4edff","header":"#e9ddff","text":"#3b2b66","muted":"#695a91","accent":"#b899ff","accentDark":"#6f59b3","glowColor":"#d2c2ff","cardBg":"#ede3ff","cardRadius":20,"glowSize":20,"glowStrength":0.33,"fontFamily":"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","snowColor":"#d8caff","snowCount":60,"snowSize":4,"snowSpeed":0.8}
+            red: { bg: '#1a0000', header: '#330000', accent: '#ff0000', accentDark: '#cc0000', glowColor: '#ff0000' },
+            blue: { bg: '#00001a', header: '#000033', accent: '#0099ff', accentDark: '#0066cc', glowColor: '#00ccff' },
+            green: { bg: '#001a00', header: '#003300', accent: '#00ff00', accentDark: '#00cc00', glowColor: '#00ff00' },
+            purple: { bg: '#1a001a', header: '#330033', accent: '#cc00ff', accentDark: '#9900cc', glowColor: '#ff00ff' },
+            orange: { bg: '#1a0f00', header: '#331f00', accent: '#ff9900', accentDark: '#cc7700', glowColor: '#ffaa00' },
+            pink: { bg: '#1a0010', header: '#330020', accent: '#ff66cc', accentDark: '#cc3399', glowColor: '#ff99dd' },
+            cyan: { bg: '#001a1a', header: '#003333', accent: '#00ffff', accentDark: '#00cccc', glowColor: '#00ffff' },
+            yellow: { bg: '#1a1a00', header: '#333300', accent: '#ffff00', accentDark: '#cccc00', glowColor: '#ffff00' }
         };
 
-        let currentTheme = localStorage.getItem('selectedTheme') || 'midnight_blossom';
-        let teacherLinkUrl = localStorage.getItem('teacherLinkUrl') || 'https://classroom.google.com';
-        let tabName = localStorage.getItem('tabName') || 'Game Launcher';
-        let tabIconUrl = localStorage.getItem('tabIconUrl') || '';
-
-        // ---------- Teacher Link Functions ----------
-        function autoSaveTeacherLink() {
-            const input = document.getElementById('teacherLinkInput');
-            const url = input.value.trim();
-
-            if (url === '') {
-                teacherLinkUrl = 'https://classroom.google.com';
-                localStorage.setItem('teacherLinkUrl', teacherLinkUrl);
-                return;
-            }
-
-            // Add https:// if not present
-            let finalUrl = url;
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                finalUrl = 'https://' + url;
-            }
-
-            teacherLinkUrl = finalUrl;
-            localStorage.setItem('teacherLinkUrl', finalUrl);
-        }
-
-        function loadTeacherLink() {
-            const input = document.getElementById('teacherLinkInput');
-            
-            if (input) input.value = teacherLinkUrl;
-        }
-
-        // ---------- Tab Customization Functions ----------
-        function autoSaveTabName() {
-            const input = document.getElementById('tabNameInput');
-            const name = input.value.trim();
-
-            if (name === '') {
-                tabName = 'Game Launcher';
-            } else {
-                tabName = name;
-            }
-
-            localStorage.setItem('tabName', tabName);
-            applyTabName();
-        }
-
-        function autoSaveTabIcon() {
-            const input = document.getElementById('tabIconInput');
-            const url = input.value.trim();
-
-            tabIconUrl = url;
-            localStorage.setItem('tabIconUrl', tabIconUrl);
-            applyTabIcon();
-        }
-
-        function applyTabName() {
-            document.title = tabName;
-        }
-
-        function applyTabIcon() {
-            // Remove existing favicon
-            const existingFavicon = document.querySelector("link[rel*='icon']");
-            if (existingFavicon) {
-                existingFavicon.remove();
-            }
-
-            if (tabIconUrl && tabIconUrl.trim() !== '') {
-                // Add new favicon
-                const link = document.createElement('link');
-                link.rel = 'icon';
-                link.href = tabIconUrl;
-                document.head.appendChild(link);
-            }
-        }
-
-        function loadTabCustomization() {
-            const nameInput = document.getElementById('tabNameInput');
-            const iconInput = document.getElementById('tabIconInput');
-            
-            if (nameInput) nameInput.value = tabName;
-            if (iconInput) iconInput.value = tabIconUrl;
-
-            applyTabName();
-            applyTabIcon();
-        }
-
-        // ---------- Theme Functions ----------
         function applyTheme(themeName) {
-            const theme = themes[themeName];
-            if (!theme) return;
-
+            const theme = themes[themeName] || themes.red;
             const root = document.documentElement;
             root.style.setProperty('--bg', theme.bg);
             root.style.setProperty('--header', theme.header);
-            root.style.setProperty('--text', theme.text);
-            root.style.setProperty('--muted', theme.muted);
             root.style.setProperty('--accent', theme.accent);
             root.style.setProperty('--accentDark', theme.accentDark);
             root.style.setProperty('--glowColor', theme.glowColor);
-            root.style.setProperty('--cardBg', theme.cardBg);
-            root.style.setProperty('--cardRadius', theme.cardRadius + 'px');
-            root.style.setProperty('--glowSize', theme.glowSize + 'px');
-            root.style.setProperty('--glowStrength', theme.glowStrength);
-            root.style.setProperty('--fontFamily', theme.fontFamily);
-            root.style.setProperty('--snowColor', theme.snowColor);
-
-            // Update snow config
-            snowConfig.color = theme.snowColor;
-            snowConfig.count = theme.snowCount;
-            snowConfig.size = theme.snowSize;
-            snowConfig.speed = theme.snowSpeed;
-
             currentTheme = themeName;
-            localStorage.setItem('selectedTheme', themeName);
-
-            // Update theme grid selection
-            updateThemeSelection();
-        }
-
-        function updateThemeSelection() {
-            document.querySelectorAll('.theme-option').forEach(opt => {
-                opt.classList.remove('selected');
-                if (opt.dataset.theme === currentTheme) {
-                    opt.classList.add('selected');
-                }
-            });
+            localStorage.setItem('theme', themeName);
         }
 
         function renderThemeGrid() {
             const grid = document.getElementById('themeGrid');
-            grid.innerHTML = Object.keys(themes).map(key => {
-                const displayName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                return `<div class="theme-option ${key === currentTheme ? 'selected' : ''}" data-theme="${key}" onclick="applyTheme('${key}')">
-                    ${displayName}
-                </div>`;
+            grid.innerHTML = Object.keys(themes).map(name => {
+                const active = name === currentTheme ? 'active' : '';
+                return `<div class="theme-btn ${active}" onclick="applyTheme('${name}')">${name.charAt(0).toUpperCase() + name.slice(1)}</div>`;
             }).join('');
         }
 
-        // ----------  Snow Effect ----------
-        var canvas = document.getElementById("snowCanvas");
-        var ctx = canvas.getContext("2d");
-        var snowflakes = [];
-        var snowConfig = {
-            count: 150,
-            size: 3,
-            speed: 1.2,
-            color: "#ffffff"
-        };
-
-        function resizeCanvas() {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-        }
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
-
-        function createSnow(count, size) {
-            snowflakes = [];
-            for (var i = 0; i < count; i++) {
-                snowflakes.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * size + 0.5,
-                    d: Math.random() * 1.5 + 0.2,
-                    sway: Math.random() * 2 * Math.PI,
-                    swayAmp: Math.random() * 20
-                });
-            }
-        }
-
-        function hexToRGBA(hex, alpha) {
-            alpha = alpha || 1;
-            if (!hex) return "rgba(255,255,255," + alpha + ")";
-            var h = hex.replace("#", "");
-            var num = parseInt(h, 16);
-            var r = (num >> 16) & 255;
-            var g = (num >> 8) & 255;
-            var b = num & 255;
-            return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
-        }
-
-        function drawSnow() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.fillStyle = hexToRGBA(snowConfig.color || "#ffffff", 0.95);
-
-            if (snowflakes.length !== snowConfig.count) {
-                createSnow(snowConfig.count, snowConfig.size);
-            }
-
-            for (var i = 0; i < snowflakes.length; i++) {
-                var flake = snowflakes[i];
-                ctx.moveTo(flake.x, flake.y);
-                ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
-                flake.y += flake.d * snowConfig.speed;
-                flake.sway += 0.01 + Math.random() * 0.02;
-                flake.x += Math.sin(flake.sway) * 0.6;
-
-                if (flake.y > canvas.height + 20) {
-                    flake.x = Math.random() * canvas.width;
-                    flake.y = -10 - Math.random() * 40;
-                }
-                if (flake.x > canvas.width + 50) flake.x = -20;
-                if (flake.x < -50) flake.x = canvas.width + 20;
-            }
-            ctx.fill();
-            requestAnimationFrame(drawSnow);
-        }
-
-        createSnow(snowConfig.count, snowConfig.size);
-        drawSnow();
-
-        // ----------  Device Information ----------
-        function getDeviceName() {
-            const platform = navigator.platform || 'Unknown';
-            const userAgent = navigator.userAgent;
-            
-            let deviceName = '';
-            
-            if (userAgent.includes('CrOS')) {
-                const match = userAgent.match(/CrOS\s+\w+\s+([\w-]+)/);
-                if (match) {
-                    deviceName = 'Chromebook-' + match[1];
-                } else {
-                    deviceName = 'Chromebook';
-                }
-            } else if (platform.includes('Win')) {
-                deviceName = 'Windows-PC';
-            } else if (platform.includes('Mac')) {
-                const isMobile = /iPhone|iPad|iPod/.test(userAgent);
-                deviceName = isMobile ? 'iPad/iPhone' : 'MacBook';
-            } else if (platform.includes('Linux')) {
-                if (userAgent.includes('Android')) {
-                    deviceName = 'Android-Device';
-                } else {
-                    deviceName = 'Linux-PC';
-                }
+        // Teacher link functionality
+        function saveTeacherLink() {
+            const input = document.getElementById('teacherLinkInput');
+            const url = input.value.trim();
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                localStorage.setItem('teacherLink', url);
+                document.getElementById('teacherLinkStatus').textContent = '✓ Teacher link saved!';
+                document.getElementById('teacherLinkStatus').style.color = '#00ff00';
             } else {
-                deviceName = 'Unknown-Device';
-            }
-            
-            return deviceName;
-        }
-
-        async function detectManagement() {
-            const userAgent = navigator.userAgent;
-            
-            if (userAgent.includes('CrOS')) {
-                return 'Managed by School';
-            } else if (navigator.managed) {
-                return 'Managed by Organization';
-            } else {
-                return 'Personal Device';
+                document.getElementById('teacherLinkStatus').textContent = '✗ Please enter a valid URL starting with http:// or https://';
+                document.getElementById('teacherLinkStatus').style.color = '#ff0000';
             }
         }
 
-        async function updateDeviceInfo() {
-            const deviceNameEl = document.getElementById('deviceName');
-            const managedByEl = document.getElementById('managedBy');
-            
-            if (deviceNameEl && managedByEl) {
-                const deviceName = getDeviceName();
-                const managedInfo = await detectManagement();
-                
-                deviceNameEl.textContent = deviceName;
-                managedByEl.textContent = managedInfo;
+        function loadTeacherLink() {
+            const savedLink = localStorage.getItem('teacherLink');
+            if (savedLink) {
+                document.getElementById('teacherLinkInput').value = savedLink;
             }
         }
 
-        updateDeviceInfo();
-
-        // ----------  Bible Verses ----------
-        const bibleVerses = [
-            { ref: "John 3:16", text: "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life." },
-            { ref: "Romans 5:8", text: "But God demonstrates His own love toward us, in that while we were still sinners, Christ died for us." },
-            { ref: "Ephesians 2:8-9", text: "For by grace you have been saved through faith, and that not of yourselves; it is the gift of God, not of works, lest anyone should boast." },
-            { ref: "Philippians 4:13", text: "I can do all things through Christ who strengthens me." },
-            { ref: "Isaiah 40:31", text: "But those who wait on the LORD shall renew their strength; they shall mount up with wings like eagles, they shall run and not be weary, they shall walk and not faint." },
-            { ref: "Romans 8:28", text: "And we know that all things work together for good to those who love God, to those who are the called according to His purpose." },
-            { ref: "Psalm 23:4", text: "Yea, though I walk through the valley of the shadow of death, I will fear no evil; for You are with me; Your rod and Your staff, they comfort me." },
-            { ref: "Joshua 1:9", text: "Have I not commanded you? Be strong and of good courage; do not be afraid, nor be dismayed, for the LORD your God is with you wherever you go." },
-            { ref: "Proverbs 3:5-6", text: "Trust in the LORD with all your heart, and lean not on your own understanding; in all your ways acknowledge Him, and He shall direct your paths." },
-            { ref: "Matthew 6:33", text: "But seek first the kingdom of God and His righteousness, and all these things shall be added to you." },
-            { ref: "Jeremiah 29:11", text: "For I know the thoughts that I think toward you, says the LORD, thoughts of peace and not of evil, to give you a future and a hope." },
-            { ref: "Psalm 46:1", text: "God is our refuge and strength, a very present help in trouble." },
-            { ref: "John 14:6", text: "Jesus said to him, 'I am the way, the truth, and the life. No one comes to the Father except through Me.'" },
-            { ref: "Romans 8:38-39", text: "For I am persuaded that neither death nor life, nor angels nor principalities nor powers, nor things present nor things to come, nor height nor depth, nor any other created thing, shall be able to separate us from the love of God which is in Christ Jesus our Lord." },
-            { ref: "Psalm 119:105", text: "Your word is a lamp to my feet and a light to my path." },
-            { ref: "Matthew 11:28", text: "Come to Me, all you who labor and are heavy laden, and I will give you rest." },
-            { ref: "Isaiah 41:10", text: "Fear not, for I am with you; be not dismayed, for I am your God. I will strengthen you, yes, I will help you, I will uphold you with My righteous right hand." },
-            { ref: "Philippians 4:6-7", text: "Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God; and the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus." },
-            { ref: "1 John 4:8", text: "He who does not love does not know God, for God is love." },
-            { ref: "Hebrews 13:8", text: "Jesus Christ is the same yesterday, today, and forever." }
-        ];
-
-        function getRandomVerse() {
-            return bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
-        }
-
-        // ----------  GitHub configuration ----------
-        const GITHUB_USER = 'Monkevrr';
-        const GITHUB_REPO = 'Html';
-        const GITHUB_BRANCH = 'main';
-
-        let games = [];
-        let proxies = [];
-        let currentGame = { filename: '', title: '' };
-        let proxyUnlocked = localStorage.getItem('proxyUnlocked') === 'true';
-        let testingUnlocked = localStorage.getItem('testingUnlocked') === 'true';
-
-        // ----------  Clock ----------
-        function updateClock() {
-            const now = new Date();
-            let h = now.getHours();
-            const m = now.getMinutes();
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
+        // Tab customization functionality
+        function saveTabCustomization() {
+            const titleInput = document.getElementById('tabTitleInput');
+            const iconInput = document.getElementById('tabIconInput');
+            const title = titleInput.value.trim();
+            const icon = iconInput.value.trim();
             
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const year = now.getFullYear();
+            if (title) {
+                document.title = title;
+                localStorage.setItem('customTabTitle', title);
+            }
             
-            const timeStr = `${h}:${String(m).padStart(2, '0')} ${ampm}`;
-            const dateStr = `${month}/${day}/${year}`;
-            
-            document.getElementById('clock').innerHTML = `<div>${timeStr}</div><div style="font-size: 12px;">${dateStr}</div>`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // ----------  Battery Status ----------
-        async function updateBatteryStatus() {
-            var widget = document.getElementById("batteryWidget");
-            if (!widget) return;
-            
-            if ("getBattery" in navigator) {
-                try {
-                    var battery = await navigator.getBattery();
-                    var updateAll = function() {
-                        var level = Math.round(battery.level * 100);
-                        var batteryLevel = document.getElementById("batteryLevel");
-                        var batteryChargingIcon = document.getElementById("batteryChargingIcon");
-                        var batteryIcon = document.getElementById("batteryIcon");
-                        
-                        if (batteryLevel) batteryLevel.textContent = level + "%";
-                        if (batteryChargingIcon) batteryChargingIcon.style.display = battery.charging ? "inline-block" : "none";
-                        
-                        if (batteryIcon) {
-                            if (battery.charging) batteryIcon.className = "fa-solid fa-battery-full";
-                            else if (level > 85) batteryIcon.className = "fa-solid fa-battery-full";
-                            else if (level > 60) batteryIcon.className = "fa-solid fa-battery-three-quarters";
-                            else if (level > 35) batteryIcon.className = "fa-solid fa-battery-half";
-                            else if (level > 10) batteryIcon.className = "fa-solid fa-battery-quarter";
-                            else batteryIcon.className = "fa-solid fa-battery-empty";
-                        }
-                    };
-                    updateAll();
-                    battery.addEventListener("levelchange", updateAll);
-                    battery.addEventListener("chargingchange", updateAll);
-                } catch (e) {
-                    widget.style.display = "none";
+            if (icon) {
+                let link = document.querySelector("link[rel~='icon']");
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'icon';
+                    document.head.appendChild(link);
                 }
-            } else {
-                widget.style.display = "none";
+                link.href = icon;
+                localStorage.setItem('customTabIcon', icon);
+            }
+            
+            document.getElementById('tabCustomStatus').textContent = '✓ Tab settings saved!';
+            document.getElementById('tabCustomStatus').style.color = '#00ff00';
+        }
+
+        function loadTabCustomization() {
+            const savedTitle = localStorage.getItem('customTabTitle');
+            const savedIcon = localStorage.getItem('customTabIcon');
+            
+            if (savedTitle) {
+                document.title = savedTitle;
+                document.getElementById('tabTitleInput').value = savedTitle;
+            }
+            
+            if (savedIcon) {
+                let link = document.querySelector("link[rel~='icon']");
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'icon';
+                    document.head.appendChild(link);
+                }
+                link.href = savedIcon;
+                document.getElementById('tabIconInput').value = savedIcon;
             }
         }
-        updateBatteryStatus();
 
-        // ----------  Keyboard Shortcuts ----------
-        document.addEventListener('keydown', function(e) {
-            // Ctrl + 1 for teacher link
-            if (e.ctrlKey && e.key === '1') {
-                e.preventDefault();
-                window.open(teacherLinkUrl, '_blank');
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // T key - Teacher panic button
+            if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.altKey) {
+                const teacherLink = localStorage.getItem('teacherLink');
+                if (teacherLink) {
+                    window.location.href = teacherLink;
+                }
             }
-
-            // ESC to close game
-            if (e.key === 'Escape' && !document.fullscreenElement &&
-                !document.webkitFullscreenElement && !document.mozFullScreenElement &&
-                !document.msFullscreenElement) {
-                closeGame();
+            
+            // ESC key - Close game
+            if (e.key === 'Escape') {
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer.style.display === 'flex') {
+                    closeGame();
+                }
+            }
+            
+            // F key - Fullscreen toggle (only in game)
+            if (e.key.toLowerCase() === 'f' && !e.ctrlKey && !e.altKey) {
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer.style.display === 'flex') {
+                    e.preventDefault();
+                    toggleFullscreen();
+                }
             }
         });
 
-        // ----------  Sidebar navigation ----------
-        function switchSection(section) {
-            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-            event.target.classList.add('active');
+        // Snow animation
+        function createSnowEffect() {
+            const canvas = document.getElementById('snowCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const snowflakes = [];
+            const snowCount = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--snowCount'));
+            const snowSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--snowSize'));
+            const snowSpeed = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--snowSpeed'));
+            
+            class Snowflake {
+                constructor() {
+                    this.reset();
+                }
+                
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height - canvas.height;
+                    this.size = Math.random() * snowSize + 1;
+                    this.speed = Math.random() * snowSpeed + 0.5;
+                    this.wind = Math.random() * 0.5 - 0.25;
+                }
+                
+                update() {
+                    this.y += this.speed;
+                    this.x += this.wind;
+                    
+                    if (this.y > canvas.height) {
+                        this.reset();
+                        this.y = -10;
+                    }
+                    
+                    if (this.x > canvas.width) {
+                        this.x = 0;
+                    } else if (this.x < 0) {
+                        this.x = canvas.width;
+                    }
+                }
+                
+                draw() {
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--snowColor');
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            for (let i = 0; i < snowCount; i++) {
+                snowflakes.push(new Snowflake());
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                snowflakes.forEach(flake => {
+                    flake.update();
+                    flake.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+            
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
 
-            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-            if (section === 'games') {
-                document.getElementById('gamesSection').classList.add('active');
-            } else if (section === 'proxys') {
-                document.getElementById('proxysSection').classList.add('active');
-            } else if (section === 'testing') {
-                document.getElementById('testingSection').classList.add('active');
-            } else if (section === 'settings') {
-                document.getElementById('settingsSection').classList.add('active');
+        createSnowEffect();
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            document.getElementById(tabName + 'Item').classList.add('active');
+            
+            if (tabName === 'proxys' && !proxyUnlocked) {
+                document.getElementById(tabName).innerHTML = '<div class="locked-overlay"><h2>🔒 Locked</h2><p>Type <code>unlockproxy</code> in the search bar to unlock this section.</p></div>';
             }
         }
 
-        // ----------  Proxy access ----------
-        function checkProxyAccess() {
-            if (proxyUnlocked) {
-                switchSection('proxys');
-            } else {
-                document.getElementById('keyModal').classList.add('show');
-                document.getElementById('keyError').textContent = '';
-                document.getElementById('keyInput').focus();
-            }
-        }
-
-        function submitKey() {
-            const key = document.getElementById('keyInput').value.trim();
-            const err = document.getElementById('keyError');
-
-            if (key === 'Lebron') {
-                proxyUnlocked = true;
-                localStorage.setItem('proxyUnlocked', 'true');
-                unlockProxy();
-                closeKeyModal();
-                switchSection('proxys');
-            } else {
-                err.textContent = 'Incorrect key! Try again.';
-                document.getElementById('keyInput').value = '';
-            }
-        }
-
+        // Unlock features
         function unlockProxy() {
+            proxyUnlocked = true;
+            localStorage.setItem('proxyUnlocked', 'true');
             const item = document.getElementById('proxysItem');
             item.classList.remove('locked');
-            item.querySelector('.lock-icon').textContent = '🔓';
-        }
-
-        function closeKeyModal() {
-            document.getElementById('keyModal').classList.remove('show');
-        }
-
-        document.getElementById('keyInput').addEventListener('keypress', e => {
-            if (e.key === 'Enter') submitKey();
-        });
-
-        // ----------  Testing access ----------
-        function checkTestingAccess() {
-            if (testingUnlocked) {
-                switchSection('testing');
-            } else {
-                const password = prompt('Enter password to access Testing:');
-                if (password === 'snowy') {
-                    testingUnlocked = true;
-                    localStorage.setItem('testingUnlocked', 'true');
-                    unlockTesting();
-                    switchSection('testing');
-                } else if (password !== null) {
-                    alert('Incorrect password!');
-                }
-            }
+            item.innerHTML = '🌐 Proxys<span class="tooltip">Browse proxy files</span>';
         }
 
         function unlockTesting() {
+            testingUnlocked = true;
+            localStorage.setItem('testingUnlocked', 'true');
             const item = document.getElementById('testingItem');
             item.classList.remove('locked');
-            item.querySelector('.lock-icon-testing').textContent = '🔓';
+            item.innerHTML = '🧪 Testing<span class="tooltip">Experimental features</span>';
         }
 
-        // ----------  Bug Report Submission ----------
-        async function submitBugReport(event) {
-            event.preventDefault();
+        // Search functionality
+        function filterGames() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
             
-            const name = document.getElementById('reporterName').value.trim();
-            const game = document.getElementById('brokenGame').value.trim();
-            const statusDiv = document.getElementById('reportStatus');
-            
-            if (!name || !game) {
-                statusDiv.style.display = 'block';
-                statusDiv.style.background = 'rgba(255, 0, 0, 0.2)';
-                statusDiv.style.border = '2px solid var(--accent)';
-                statusDiv.style.color = 'var(--accent)';
-                statusDiv.textContent = '❌ Please fill out all fields!';
+            if (input === 'unlockproxy') {
+                unlockProxy();
+                document.getElementById('searchInput').value = '';
+                alert('🔓 Proxy section unlocked!');
                 return;
             }
-
-            // Show loading state
-            statusDiv.style.display = 'block';
-            statusDiv.style.background = 'rgba(255, 255, 0, 0.2)';
-            statusDiv.style.border = '2px solid #ffff00';
-            statusDiv.style.color = '#ffff00';
-            statusDiv.textContent = '⏳ Sending report...';
-
-            try {
-                const webhookUrl = 'https://discord.com/api/webhooks/1444868852340101140/3ZuwhdOnqT09hmGT83PA3IX5hvqJipoCAlLOSWdCBT7kHi696xp0c40LiAyQ_3b0PkFy';
-                
-                const payload = {
-                    embeds: [{
-                        title: '🐛 Bug Report - Broken Game',
-                        color: 0xff0000,
-                        fields: [
-                            {
-                                name: '👤 Reporter',
-                                value: name,
-                                inline: true
-                            },
-                            {
-                                name: '🎮 Broken Game',
-                                value: game,
-                                inline: true
-                            }
-                        ],
-                        timestamp: new Date().toISOString(),
-                        footer: {
-                            text: 'Game Launcher Bug Report'
-                        }
-                    }]
-                };
-
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok || response.status === 204) {
-                    statusDiv.style.background = 'rgba(0, 255, 0, 0.2)';
-                    statusDiv.style.border = '2px solid #00ff00';
-                    statusDiv.style.color = '#00ff00';
-                    statusDiv.textContent = '✅ Report submitted successfully! Thank you!';
-                    
-                    // Clear form
-                    document.getElementById('bugReportForm').reset();
-                } else {
-                    throw new Error('Failed to send report');
-                }
-            } catch (error) {
-                console.error('Error submitting bug report:', error);
-                statusDiv.style.background = 'rgba(255, 0, 0, 0.2)';
-                statusDiv.style.border = '2px solid var(--accent)';
-                statusDiv.style.color = 'var(--accent)';
-                statusDiv.textContent = '❌ Failed to submit report. Please try again.';
+            
+            if (input === 'unlocktesting') {
+                unlockTesting();
+                document.getElementById('searchInput').value = '';
+                alert('🔓 Testing section unlocked!');
+                return;
             }
-
-            // Hide status after 5 seconds
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 5000);
+            
+            const filtered = games.filter(g => g.title.toLowerCase().includes(input));
+            
+            if (filtered.length === 0) {
+                document.getElementById('noResults').style.display = 'block';
+                document.getElementById('game-sections').style.display = 'none';
+                document.getElementById('alphabetNav').style.display = 'none';
+            } else {
+                document.getElementById('noResults').style.display = 'none';
+                document.getElementById('game-sections').style.display = 'block';
+                document.getElementById('alphabetNav').style.display = 'flex';
+                renderGameSections(filtered);
+            }
         }
 
-        // ----------  Data fetching ----------
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('noResults').style.display = 'none';
+            document.getElementById('game-sections').style.display = 'block';
+            document.getElementById('alphabetNav').style.display = 'flex';
+            renderGameSections();
+        }
+
+        // Improved GitHub fetching with multiple fallback methods
+        async function fetchWithFallback(url, filename) {
+            const urls = [
+                // Method 1: JSDelivr CDN (most likely to work on school WiFi)
+                `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/${filename}`,
+                // Method 2: Raw GitHub (original)
+                `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filename}`,
+                // Method 3: GitHub Pages (if enabled)
+                `https://${GITHUB_USER}.github.io/${GITHUB_REPO}/${filename}`,
+                // Method 4: CORS proxy as last resort
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filename}`)}`
+            ];
+
+            for (let i = 0; i < urls.length; i++) {
+                try {
+                    console.log(`Trying method ${i + 1}: ${urls[i]}`);
+                    const response = await fetch(urls[i] + `?t=${Date.now()}`);
+                    if (response.ok) {
+                        console.log(`✓ Success with method ${i + 1}`);
+                        return await response.text();
+                    }
+                } catch (err) {
+                    console.log(`✗ Method ${i + 1} failed:`, err.message);
+                    if (i === urls.length - 1) throw err;
+                }
+            }
+            throw new Error('All methods failed');
+        }
+
         async function fetchGames() {
-            const api = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
-            const res = await fetch(api);
-
-            if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
-
-            const data = await res.json();
-            games = data.tree
-                .filter(f => f.path.endsWith('.html') && f.type === 'blob' && !f.path.includes('prox/'))
-                .map(f => ({
-                    filename: f.path,
-                    name: formatGameName(f.path)
-                }));
-            return games;
+            const jsonUrl = `games/games.json`;
+            try {
+                const data = await fetchWithFallback(jsonUrl, jsonUrl);
+                const parsed = JSON.parse(data);
+                games = parsed.games || [];
+                console.log(`✓ Loaded ${games.length} games successfully`);
+            } catch (e) {
+                console.error('Failed to fetch games:', e);
+                throw new Error('Could not connect to repository');
+            }
         }
 
         async function fetchProxies() {
-            const api = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/prox?ref=${GITHUB_BRANCH}`;
-            const res = await fetch(api);
-
-            if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
-
-            const data = await res.json();
-            proxies = data
-                .filter(f => f.name.endsWith('.html') && f.type === 'file')
-                .map(f => ({
-                    filename: f.name,
-                    path: f.path,
-                    name: formatProxyName(f.name)
-                }));
-            return proxies;
-        }
-
-        function formatGameName(path) {
-            let name = path.replace('.html', '');
-            name = name.replace('view-page-source.com-', '');
-            name = name.replace(/_/g, ' ').replace(/-/g, ' ');
-            name = name.replace('.itch.io', '');
-            return name.split(' ')
-                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-                .join(' ');
-        }
-
-        function formatProxyName(name) {
-            name = name.replace('.html', '');
-            name = name.replace(/_/g, ' ').replace(/-/g, ' ');
-            return name.split(' ')
-                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-                .join(' ');
-        }
-
-        // ----------  UI rendering ----------
-        function renderAlphabetNav() {
-            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const nav = document.getElementById('alphabetNav');
-            
-            nav.innerHTML = '';
-            
-            for (let letter of alphabet) {
-                const letterDiv = document.createElement('div');
-                letterDiv.className = 'alphabet-letter';
-                letterDiv.textContent = letter;
-                letterDiv.onclick = () => scrollToLetter(letter);
-                nav.appendChild(letterDiv);
+            const jsonUrl = `prox/proxys.json`;
+            try {
+                const data = await fetchWithFallback(jsonUrl, jsonUrl);
+                const parsed = JSON.parse(data);
+                proxies = parsed.proxies || [];
+            } catch (e) {
+                console.error('Failed to fetch proxies:', e);
+                proxies = [];
             }
+        }
+
+        // Render alphabet navigation
+        function renderAlphabetNav() {
+            const container = document.getElementById('alphabetNav');
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            const grouped = groupGamesByLetter();
+            
+            container.innerHTML = alphabet.map(letter => {
+                const disabled = !grouped[letter] ? 'disabled' : '';
+                return `<div class="alphabet-letter ${disabled}" onclick="scrollToLetter('${letter}')">${letter}</div>`;
+            }).join('');
         }
 
         function scrollToLetter(letter) {
             const element = document.getElementById(`section-${letter}`);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
-                // Highlight the letter
-                document.querySelectorAll('.alphabet-letter').forEach(el => {
-                    el.classList.remove('active');
-                });
-                document.querySelectorAll('.alphabet-letter').forEach(el => {
-                    if (el.textContent === letter) {
-                        el.classList.add('active');
-                    }
-                });
             }
         }
 
-        function renderGameSections() {
-            const container = document.getElementById('gameSections');
-            const noResults = document.getElementById('noResults');
+        function groupGamesByLetter(gameList = games) {
+            const grouped = {};
+            gameList.forEach(game => {
+                const first = game.title.charAt(0).toUpperCase();
+                if (!grouped[first]) grouped[first] = [];
+                grouped[first].push(game);
+            });
+            return grouped;
+        }
+
+        function renderGameSections(gameList = games) {
+            const container = document.getElementById('game-sections');
+            const grouped = groupGamesByLetter(gameList);
+            const letters = Object.keys(grouped).sort();
             
-            if (games.length === 0) {
+            if (letters.length === 0) {
                 container.innerHTML = '';
-                noResults.style.display = 'block';
                 return;
             }
             
-            // Group games by first letter
-            const groupedGames = {};
-            games.forEach(game => {
-                const firstLetter = game.name.charAt(0).toUpperCase();
-                if (!groupedGames[firstLetter]) {
-                    groupedGames[firstLetter] = [];
-                }
-                groupedGames[firstLetter].push(game);
-            });
-            
-            // Sort letters
-            const sortedLetters = Object.keys(groupedGames).sort();
-            
-            // Render sections
-            container.innerHTML = '';
-            let hasVisibleSections = false;
-            
-            for (let letter of sortedLetters) {
-                const gamesInSection = groupedGames[letter];
-                const section = document.createElement('div');
-                section.className = 'game-section';
-                section.id = `section-${letter}`;
-                
-                const header = document.createElement('h2');
-                header.className = 'section-header';
-                header.textContent = letter;
-                
-                const buttonContainer = document.createElement('div');
-                buttonContainer.className = 'button-container';
-                
-                gamesInSection.forEach(game => {
-                    const button = document.createElement('button');
-                    button.className = 'game-button';
-                    button.innerHTML = `<span>${game.name}</span>`;
-                    button.onclick = () => loadGame(game.filename, game.name);
-                    buttonContainer.appendChild(button);
-                });
-                
-                section.appendChild(header);
-                section.appendChild(buttonContainer);
-                container.appendChild(section);
-                hasVisibleSections = true;
-            }
-            
-            noResults.style.display = hasVisibleSections ? 'none' : 'block';
-        }
-
-        function filterGames() {
-            const searchTerm = document.getElementById('gameSearch').value.toLowerCase().trim();
-            
-            if (searchTerm === '') {
-                // Show all games
-                document.querySelectorAll('.game-section').forEach(section => {
-                    section.style.display = 'block';
-                });
-                document.querySelectorAll('.alphabet-letter').forEach(letter => {
-                    letter.classList.remove('disabled');
-                });
-                document.getElementById('noResults').style.display = 'none';
-                return;
-            }
-            
-            // Filter games
-            const filteredGames = games.filter(game => 
-                game.name.toLowerCase().includes(searchTerm)
-            );
-            
-            if (filteredGames.length === 0) {
-                document.querySelectorAll('.game-section').forEach(section => {
-                    section.style.display = 'none';
-                });
-                document.querySelectorAll('.alphabet-letter').forEach(letter => {
-                    letter.classList.add('disabled');
-                });
-                document.getElementById('noResults').style.display = 'block';
-                return;
-            }
-            
-            // Group filtered games by first letter
-            const filteredGroupedGames = {};
-            filteredGames.forEach(game => {
-                const firstLetter = game.name.charAt(0).toUpperCase();
-                if (!filteredGroupedGames[firstLetter]) {
-                    filteredGroupedGames[firstLetter] = [];
-                }
-                filteredGroupedGames[firstLetter].push(game);
-            });
-            
-            // Show/hide sections based on filtered results
-            document.querySelectorAll('.game-section').forEach(section => {
-                const letter = section.id.replace('section-', '');
-                if (filteredGroupedGames[letter]) {
-                    section.style.display = 'block';
-                    
-                    // Update button container with only filtered games
-                    const buttonContainer = section.querySelector('.button-container');
-                    buttonContainer.innerHTML = '';
-                    
-                    filteredGroupedGames[letter].forEach(game => {
-                        const button = document.createElement('button');
-                        button.className = 'game-button';
-                        button.innerHTML = `<span>${game.name}</span>`;
-                        button.onclick = () => loadGame(game.filename, game.name);
-                        buttonContainer.appendChild(button);
-                    });
-                } else {
-                    section.style.display = 'none';
-                }
-            });
+            container.innerHTML = letters.map(letter => `
+                <div id="section-${letter}">
+                    <div class="section-title">📁 ${letter}</div>
+                    <div class="game-grid">
+                        ${grouped[letter].map(game => `
+                            <div class="game-card" onclick="loadGame('${game.file}', '${game.title}')">
+                                <h3>${game.title}</h3>
+                                <p>${game.description || 'Click to play'}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
             
             // Update alphabet navigation
             document.querySelectorAll('.alphabet-letter').forEach(letter => {
                 const letterChar = letter.textContent;
-                if (filteredGroupedGames[letterChar]) {
+                if (grouped[letterChar]) {
                     letter.classList.remove('disabled');
                 } else {
                     letter.classList.add('disabled');
@@ -2016,7 +1486,7 @@
             }
         }
 
-        // ----------  Game loading ----------
+        // Game loading with fallback methods
         function loadGame(filename, title) {
             currentGame = { filename, title };
             const loader = document.getElementById('game-loader');
@@ -2029,18 +1499,11 @@
             document.getElementById('verseText').textContent = `"${verse.text}"`;
             document.getElementById('verseReference').textContent = `- ${verse.ref}`;
 
-            const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filename}`;
-
             loader.style.display = 'flex';
             container.style.display = 'none';
 
-            fetch(`${url}?t=${Date.now()}`)
-                .then(r => {
-                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                    return r.text();
-                })
+            fetchWithFallback(filename, filename)
                 .then(html => {
-                    // Changed from 1000ms to 5000ms (5 seconds) so people can read the verse
                     setTimeout(() => {
                         gameTitle.textContent = title;
                         frame.srcdoc = html;
@@ -2050,7 +1513,7 @@
                 })
                 .catch(err => {
                     loader.style.display = 'none';
-                    alert('Failed to load game: ' + err.message);
+                    alert('Failed to load game: ' + err.message + '\nTry checking your internet connection or contact support.');
                     console.error(err);
                 });
         }
@@ -2067,18 +1530,11 @@
             document.getElementById('verseText').textContent = `"${verse.text}"`;
             document.getElementById('verseReference').textContent = `- ${verse.ref}`;
 
-            const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${filepath}`;
-
             loader.style.display = 'flex';
             container.style.display = 'none';
 
-            fetch(`${url}?t=${Date.now()}`)
-                .then(r => {
-                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                    return r.text();
-                })
+            fetchWithFallback(filepath, filepath)
                 .then(html => {
-                    // Changed from 1000ms to 5000ms (5 seconds) so people can read the verse
                     setTimeout(() => {
                         gameTitle.textContent = title;
                         frame.srcdoc = html;
@@ -2154,7 +1610,7 @@
             currentGame = { filename: '', title: '' };
         }
 
-        // ----------  Initialization ----------
+        // Initialization
         async function initializeLauncher() {
             const loader = document.getElementById('initial-loader');
             const main = document.getElementById('main-content');
@@ -2174,7 +1630,7 @@
             try {
                 await fetchGames();
                 gameCount.textContent = `${games.length} Games Found!`;
-                loadingText.textContent = 'Loading games use this wisely mostly durring free time or lunch';
+                loadingText.textContent = 'Loading games - use this wisely mostly during free time or lunch';
 
                 setTimeout(() => {
                     renderAlphabetNav();
@@ -2184,7 +1640,7 @@
                 }, 1500);
             } catch (e) {
                 loadingText.textContent = 'Error loading games';
-                gameCount.innerHTML = '<span style="color:#ff0000;">Failed to connect to GitHub</span>';
+                gameCount.innerHTML = '<span style="color:#ff0000;">Failed to connect to GitHub. Try reloading the page.</span>';
                 console.error(e);
                 setTimeout(() => {
                     if (confirm('Failed to load games from GitHub. Retry?')) location.reload();
