@@ -13,11 +13,9 @@
 <a href="games.html">
 <button title="Games" id="Games" class="divbutton"> Games </button>
 </a>
-
 <a href="Apps.html">
 <button title="Apps" id="Apps" class="divbutton"> Apps</button>
 </a>
-
 <a href="index.html">
 <button title="home" id="home" class="divbutton">home</button>
 </a>
@@ -30,13 +28,9 @@
 <a href="cars.html">
 <button title="cars" class="divbutton">Cars</button>
 </a>
-</div>ee
-<iframe
-src="https://spells.myaddr.dev"
-></iframe>
-<button
-onclick="iffs('https://spells.myaddr.dev')"
-class="fullscreen"></button>
+</div>
+<iframe id="mainframe" src="https://nuuseonly.xyz"></iframe>
+<button onclick="iffs('https://nuuseonly.xyz')" class="fullscreen"></button>
 
 <script>
 function iffs(href) {
@@ -49,7 +43,11 @@ stl.position = 'fixed';
 stl.left = stl.right = stl.top = stl.bottom = '0';
 iframe.src = href;
 }
+window.onload = () => {
+iffs('https://nuuseonly.xyz');
+};
 </script>
+
 <script>
 document.addEventListener("keydown",
 async (e) => { if ("`" == e.key) window.parent.window.location.replace("https://www.roblox.com/") });
