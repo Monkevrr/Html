@@ -1378,12 +1378,61 @@
         }
 
         async function fetchGames() {
-            const jsonUrl = `games/games.json`;
             try {
-                const data = await fetchWithFallback(jsonUrl, jsonUrl);
-                const parsed = JSON.parse(data);
-                games = parsed.games || [];
-                console.log(`✓ Loaded ${games.length} games successfully`);
+                // Use GitHub API to scan repo for HTML files
+                const apiUrls = [
+                    `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`,
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`)}`
+                ];
+
+                let treeData = null;
+                for (let i = 0; i < apiUrls.length; i++) {
+                    try {
+                        console.log(`Scanning repo with method ${i + 1}...`);
+                        const response = await fetch(apiUrls[i]);
+                        if (response.ok) {
+                            treeData = await response.json();
+                            console.log(`✓ Successfully scanned repo`);
+                            break;
+                        }
+                    } catch (err) {
+                        console.log(`✗ Scan method ${i + 1} failed:`, err.message);
+                    }
+                }
+
+                if (!treeData || !treeData.tree) {
+                    throw new Error('Could not scan repository');
+                }
+
+                // Filter for HTML files, excluding the launcher itself
+                const htmlFiles = treeData.tree.filter(file => {
+                    const path = file.path.toLowerCase();
+                    return path.endsWith('.html') && 
+                           !path.includes('proxy') && 
+                           !path.includes('launcher') &&
+                           !path.includes('index.html') &&
+                           file.type === 'blob';
+                });
+
+                // Convert to game objects
+                games = htmlFiles.map(file => {
+                    const fileName = file.path.split('/').pop();
+                    const title = fileName.replace('.html', '').replace(/-|_/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                    
+                    return {
+                        title: title,
+                        file: file.path,
+                        description: `Play ${title}`
+                    };
+                });
+
+                // Sort games alphabetically
+                games.sort((a, b) => a.title.localeCompare(b.title));
+                
+                console.log(`✓ Found ${games.length} games automatically`);
             } catch (e) {
                 console.error('Failed to fetch games:', e);
                 throw new Error('Could not connect to repository');
@@ -1391,11 +1440,55 @@
         }
 
         async function fetchProxies() {
-            const jsonUrl = `prox/proxys.json`;
             try {
-                const data = await fetchWithFallback(jsonUrl, jsonUrl);
-                const parsed = JSON.parse(data);
-                proxies = parsed.proxies || [];
+                // Use GitHub API to scan for proxy files
+                const apiUrls = [
+                    `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`,
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`)}`
+                ];
+
+                let treeData = null;
+                for (let i = 0; i < apiUrls.length; i++) {
+                    try {
+                        const response = await fetch(apiUrls[i]);
+                        if (response.ok) {
+                            treeData = await response.json();
+                            break;
+                        }
+                    } catch (err) {
+                        console.log(`Proxy scan method ${i + 1} failed`);
+                    }
+                }
+
+                if (!treeData || !treeData.tree) {
+                    proxies = [];
+                    return;
+                }
+
+                // Filter for files in prox/ or proxy/ directories
+                const proxyFiles = treeData.tree.filter(file => {
+                    const path = file.path.toLowerCase();
+                    return (path.includes('prox/') || path.includes('proxy/')) && 
+                           path.endsWith('.html') &&
+                           file.type === 'blob';
+                });
+
+                // Convert to proxy objects
+                proxies = proxyFiles.map(file => {
+                    const fileName = file.path.split('/').pop();
+                    const name = fileName.replace('.html', '').replace(/-|_/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                    
+                    return {
+                        name: name,
+                        path: file.path
+                    };
+                });
+
+                proxies.sort((a, b) => a.name.localeCompare(b.name));
+                console.log(`✓ Found ${proxies.length} proxies automatically`);
             } catch (e) {
                 console.error('Failed to fetch proxies:', e);
                 proxies = [];
