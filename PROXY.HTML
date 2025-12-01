@@ -629,6 +629,40 @@
             animation: pulse 1.5s ease-in-out infinite;
         }
 
+        /* Device Info Widget */
+        #deviceInfo {
+            position: fixed;
+            top: 10px;
+            left: 270px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 5000;
+            padding: 10px 20px;
+            background: rgba(255, 0, 0, 0.15);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .device-name {
+            font-size: 16px;
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 0 0 8px #ff0000;
+        }
+
+        .managed-by {
+            font-size: 13px;
+            color: #ff6666;
+            font-weight: normal;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        .device-icon {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -653,6 +687,19 @@
                 flex-direction: column;
                 gap: 10px;
                 font-size: 16px;
+            }
+
+            #deviceInfo {
+                left: 210px;
+                padding: 8px 12px;
+            }
+
+            .device-name {
+                font-size: 14px;
+            }
+
+            .managed-by {
+                font-size: 11px;
             }
         }
     </style>
@@ -699,6 +746,15 @@
                 <div class="proxy-list" id="proxyList"></div>
             </div>
         </div>
+    </div>
+
+    <!-- Device Info Widget -->
+    <div id="deviceInfo">
+        <div class="device-name">
+            <span class="device-icon"><i class="fa-solid fa-laptop"></i></span>
+            <span id="deviceName">Loading...</span>
+        </div>
+        <div class="managed-by" id="managedBy">Detecting management...</div>
     </div>
 
     <!-- Status Bar (Clock & Battery) -->
@@ -820,6 +876,90 @@
 
         createSnow(snowConfig.count, snowConfig.size);
         drawSnow();
+
+        // ----------  Device Information ----------
+        function getDeviceName() {
+            // Try to get hostname from various sources
+            let deviceName = localStorage.getItem('deviceName');
+            
+            if (!deviceName) {
+                // Generate a device name based on platform
+                const platform = navigator.platform || 'Unknown';
+                const userAgent = navigator.userAgent;
+                
+                if (userAgent.includes('CrOS')) {
+                    // Chrome OS device
+                    deviceName = 'Chromebook-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                } else if (platform.includes('Win')) {
+                    deviceName = 'Windows-PC-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                } else if (platform.includes('Mac')) {
+                    deviceName = 'Mac-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                } else if (platform.includes('Linux')) {
+                    deviceName = 'Linux-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                } else {
+                    deviceName = 'Device-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                }
+                
+                localStorage.setItem('deviceName', deviceName);
+            }
+            
+            return deviceName;
+        }
+
+        async function detectManagement() {
+            let managedInfo = localStorage.getItem('managedInfo');
+            
+            if (!managedInfo) {
+                // Try to detect if device is managed
+                const userAgent = navigator.userAgent;
+                
+                if (userAgent.includes('CrOS')) {
+                    // Chromebook - likely managed by a school/organization
+                    managedInfo = 'Managed by School District';
+                } else if (navigator.managed) {
+                    // Enterprise managed browser
+                    managedInfo = 'Managed by Organization';
+                } else {
+                    // Not managed or unable to detect
+                    managedInfo = 'Personal Device';
+                }
+                
+                localStorage.setItem('managedInfo', managedInfo);
+            }
+            
+            return managedInfo;
+        }
+
+        async function updateDeviceInfo() {
+            const deviceNameEl = document.getElementById('deviceName');
+            const managedByEl = document.getElementById('managedBy');
+            
+            if (deviceNameEl && managedByEl) {
+                const deviceName = getDeviceName();
+                const managedInfo = await detectManagement();
+                
+                deviceNameEl.textContent = deviceName;
+                managedByEl.textContent = managedInfo;
+            }
+        }
+
+        // Call on load
+        updateDeviceInfo();
+
+        // Allow user to customize device info (double-click to edit)
+        document.getElementById('deviceInfo').addEventListener('dblclick', function() {
+            const newName = prompt('Enter device name:', getDeviceName());
+            if (newName && newName.trim()) {
+                localStorage.setItem('deviceName', newName.trim());
+                document.getElementById('deviceName').textContent = newName.trim();
+            }
+            
+            const newManaged = prompt('Enter management info:', localStorage.getItem('managedInfo'));
+            if (newManaged && newManaged.trim()) {
+                localStorage.setItem('managedInfo', newManaged.trim());
+                document.getElementById('managedBy').textContent = newManaged.trim();
+            }
+        });
 
         // ----------  GitHub configuration ----------
         const GITHUB_USER = 'Monkevrr';
