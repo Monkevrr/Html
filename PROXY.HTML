@@ -734,6 +734,16 @@
             align-items: center;
             gap: 20px;
             z-index: 5000;
+        }
+
+        #clock {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: var(--cardBg);
+            border-radius: 20px;
+            border: 2px solid var(--accent);
             font-size: 20px;
             color: var(--accent);
             font-weight: bold;
@@ -748,6 +758,10 @@
             background: var(--cardBg);
             border-radius: 20px;
             border: 2px solid var(--accent);
+            font-size: 20px;
+            color: var(--accent);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--accent);
         }
 
         #batteryWidget i {
@@ -1636,6 +1650,9 @@
             // Apply saved theme
             applyTheme(currentTheme);
             renderThemeGrid();
+            
+            // Load saved teacher link
+            loadTeacherLink();
 
             try {
                 await fetchGames();
